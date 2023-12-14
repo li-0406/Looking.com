@@ -7,6 +7,8 @@ import {
   faBed,
   faCalendar,
   faPeopleGroup,
+  faPlus,
+  faMinus,
 } from "@fortawesome/free-solid-svg-icons";
 import format from "date-fns/format";
 import "react-date-range/dist/styles.css"; // main css file
@@ -16,6 +18,41 @@ import * as locales from "react-date-range/dist/locale";
 import { DateRange } from "react-date-range";
 
 const Home = () => {
+  const [openPeople, setopenPeople] = useState(false);
+  const [conditions, setConditions] = useState({
+    adult: 1,
+    children: 0,
+    room: 1,
+  });
+  const handleCounter = (item, icon) => {
+    setConditions((prev) => {
+      switch (true) {
+        case item.name === "成人":
+          return {
+            ...prev,
+            adult: icon === "plus" ? prev.adult + 1 : prev.adult - 1,
+          };
+        case item.name === "孩童":
+          return {
+            ...prev,
+            children: icon === "plus" ? prev.children + 1 : prev.children - 1,
+          };
+        case item.name === "客房":
+          return {
+            ...prev,
+            room: icon === "plus" ? prev.room + 1 : prev.room - 1,
+          };
+        default:
+          return prev;
+      }
+    });
+  };
+  const people = [
+    { name: "成人", num: conditions.adult },
+    { name: "孩童", num: conditions.children },
+    { name: "客房", num: conditions.room },
+  ];
+
   const [openCalendar, setOpenCalendar] = useState(false);
   const [dates, setdates] = useState([
     {
@@ -27,7 +64,9 @@ const Home = () => {
   return (
     <div
       className="home bg-gray-800"
-      onClick={() => (openCalendar ? setOpenCalendar(!openCalendar) : "")}
+      onClick={() => {
+        return openPeople ? setopenPeople(false) : "";
+      }}
     >
       <Navbar />
       <Header />
@@ -43,7 +82,8 @@ const Home = () => {
         <div className="bg-gray-800 rounded-md pl-4 flex-1 relative flex items-center">
           <FontAwesomeIcon icon={faCalendar} className=" text-gray-400" />
           <input
-            className="bg-gray-800 focus:outline-0 rounded p-3 w-full"
+            readOnly
+            className="bg-gray-800 focus:outline-0 rounded p-3 w-full cursor-pointer"
             v-model="input"
             placeholder={`${format(
               dates[0].startDate,
@@ -63,14 +103,46 @@ const Home = () => {
             />
           )}
         </div>
-
         <div className="bg-gray-800 rounded-md pl-4 flex-1">
           <FontAwesomeIcon icon={faPeopleGroup} className=" text-gray-400" />
           <input
-            className="bg-gray-800 focus:outline-0 rounded p-3"
+            readOnly
+            onClick={() => setopenPeople(!openPeople)}
+            className="bg-gray-800 focus:outline-0 rounded p-3 cursor-pointer"
             v-model="input"
-            placeholder="3位成人 · 2 位小孩 · 1 間房"
+            placeholder={`${conditions.adult} 位成人 · ${conditions.children} 位小孩 · ${conditions.room} 間房`}
           />
+          {openPeople && (
+            <div className="bg-white shadow-md rounded-lg p-8 absolute top-15 right-20 w-[400px]">
+              {people.map((i, index) => (
+                <div
+                  className=" flex items-center justify-between"
+                  key={i.name}
+                >
+                  <span>{i.name}</span>
+                  <div
+                    className={`border rounded-lg p-2 flex gap-4  ${
+                      index === 1 ? "my-2" : ""
+                    }`}
+                  >
+                    <button
+                      onClick={() => handleCounter(i, "minus")}
+                      disabled={i.num === 0}
+                      className={`cursor-pointer ${
+                        i.num === 0 ? "cursor-not-allowed opacity-50" : ""
+                      }`}
+                    >
+                      <FontAwesomeIcon icon={faMinus} />
+                    </button>
+                    <span className="mx-4">{i.num}</span>
+                    <button onClick={() => handleCounter(i, "plus")}>
+                      <FontAwesomeIcon icon={faPlus} />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
         <button className="bg-slate-600 rounded-md px-6 text-white hover:bg-slate-700 ">
           搜尋
