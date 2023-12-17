@@ -16,7 +16,7 @@ import "react-date-range/dist/theme/default.css"; // theme css file
 import * as locales from "react-date-range/dist/locale";
 //用它來叫出不同版本的語言翻譯，把日曆換成中文
 import { DateRange } from "react-date-range";
-
+import Select from "react-select";
 const Home = () => {
   const [openPeople, setopenPeople] = useState(false);
   const [conditions, setConditions] = useState({
@@ -61,23 +61,53 @@ const Home = () => {
       key: "selection",
     },
   ]);
+  const options = [
+    { value: "台北", label: "台北" },
+    { value: "新北", label: "新北" },
+    { value: "宜蘭", label: "宜蘭" },
+  ];
+
   return (
-    <div
-      className="home bg-gray-800"
-      onClick={() => {
-        return openPeople ? setopenPeople(false) : "";
-      }}
-    >
+    <div className="home bg-gray-800">
       <Navbar />
       <Header />
       <div className="container mx-auto max-w-screen-xl rounded-md bg-yellow-700 p-1 flex gap-1 relative bottom-7">
         <div className="bg-gray-800  rounded-md pl-4 flex-1 flex items-center">
           <FontAwesomeIcon icon={faBed} className=" text-gray-400" />
-          <input
+          <Select
+            className="w-full px-3"
+            options={options}
+            styles={{
+              control: (baseStyles, state) => ({
+                ...baseStyles,
+                backgroundColor: "bg-gray-800",
+                borderColor: "gray",
+                "&:focus": {
+                  outline: "none", // 移除默認的高亮樣式
+                },
+              }),
+              singleValue: (baseStyles, state) => ({
+                ...baseStyles,
+                color: "white", // 设置选中项字体颜色
+              }),
+              option: (baseStyles, state) => ({
+                ...baseStyles,
+                backgroundColor: state.isSelected ? "lightblue" : "white",
+                ":hover": {
+                  backgroundColor: "lightblue",
+                },
+              }),
+              input: (baseStyles) => ({
+                ...baseStyles,
+                color: "gray", // 设置输入文本颜色
+              }),
+            }}
+          />
+          {/* <input
             className="bg-gray-800 focus:outline-0 rounded p-3 w-full text-white"
             v-model="input"
             placeholder="你要去哪裡？"
-          />
+          /> */}
         </div>
         <div className="bg-gray-800 rounded-md pl-4 flex-1 relative flex items-center">
           <FontAwesomeIcon icon={faCalendar} className=" text-gray-400" />
@@ -103,12 +133,12 @@ const Home = () => {
             />
           )}
         </div>
-        <div className="bg-gray-800 rounded-md pl-4 flex-1">
+        <div className="bg-gray-800 rounded-md pl-4 flex-1 flex items-center">
           <FontAwesomeIcon icon={faPeopleGroup} className=" text-gray-400" />
           <input
             readOnly
             onClick={() => setopenPeople(!openPeople)}
-            className="bg-gray-800 focus:outline-0 rounded p-3 cursor-pointer"
+            className="bg-gray-800 focus:outline-0 rounded p-3 cursor-pointer w-full"
             v-model="input"
             placeholder={`${conditions.adult} 位成人 · ${conditions.children} 位小孩 · ${conditions.room} 間房`}
           />
