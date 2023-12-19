@@ -80,12 +80,60 @@ const Home = () => {
     },
   ];
 
+  const special = [
+    {
+      name: "老城公寓酒店",
+      url: "https://cf.bstatic.com/xdata/images/hotel/square600/13125860.webp?k=35b70a7e8a17a71896996cd55d84f742cd15724c3aebaed0d9b5ba19c53c430b&o=",
+      area: "老城, 波蘭, Kraków",
+      value: 8.7,
+      price: 3475,
+    },
+    {
+      name: "布達佩斯七季公寓酒店",
+      url: "https://cf.bstatic.com/xdata/images/hotel/square600/87428762.webp?k=de5db8fe94cbfe08d3bf16d3c86def035fd73b43ee497cffe27b03363764e0e2&o=",
+      area: "6區 - 特蕾西亞城, 匈牙利, Budapest",
+      value: 8.6,
+      price: 2602,
+    },
+    {
+      name: "萊蒙洛克公寓式酒店",
+      url: "https://cf.bstatic.com/xdata/images/hotel/square600/85257658.webp?k=e3f110e4ed0978310a028465a3bdd609149ecbded601555c881106255556b52e&o=",
+      area: "陶爾哈姆萊茨, 英國, London",
+      value: 8.9,
+      price: 6965,
+    },
+    {
+      name: "騎士三碼頭酒店",
+      url: "https://cf.bstatic.com/xdata/images/hotel/square600/29466558.webp?k=7f9cf4736f69b30c20fa7a751bb8711fa195bc9ff6092d5412d52daf6cada17f&o=",
+      area: "倫敦金融城, 英國, London",
+      value: 9.4,
+      price: 14582,
+    },
+  ];
+
   return (
     <div className="home  bg-gray-800">
       <Navbar />
       <Header />
-      <div className="container mx-auto max-w-screen-xl pt-20">
-        <h4 className="text-gray-300 font-semibold text-2xl mb-4">
+      <div className="container mx-auto max-w-screen-xl pt-10">
+        <h4 className="text-gray-300 font-semibold text-2xl mb-1 mt-15">
+          特別優惠
+        </h4>
+        <span className="text-gray-400 mb-4 block">
+          為您提供的促銷、折扣與特別優惠
+        </span>
+        <div className="bg-banner bg-no-repeat bg-cover bg-center p-16 rounded-lg">
+          <p className="text-gray-100 text-2xl font-semibold">
+            把握年末優惠省 15%
+          </p>
+          <p className="text-gray-300 mt-2 mb-4">
+            探索全球成千上萬目的地，至少省15%
+          </p>
+          <button className="bg-slate-700 px-4 py-3 rounded-md text-gray-300 hover:bg-slate-900">
+            搜尋年末優惠
+          </button>
+        </div>
+        <h4 className="text-gray-300 font-semibold text-2xl mb-4 mt-16">
           依住宿類型瀏覽
         </h4>
         <Feature dataArray={type} />
@@ -104,6 +152,10 @@ const Home = () => {
         </span>
         <PostCard item={card.slice(0, 2)} />
         <PostCard item={card.slice(2, 5)} />
+        <h4 className="text-gray-300 font-semibold text-2xl mb-4 mt-15">
+          人氣民宿、公寓類型住宿
+        </h4>
+        <Feature dataArray={special} />
       </div>
     </div>
   );

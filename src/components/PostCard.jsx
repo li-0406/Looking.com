@@ -10,9 +10,15 @@ const PostCard = ({ item }) => {
             alt=""
             className="object-cover w-full h-[300px] rounded-xl"
           />
-          <span className="absolute top-5 left-3 text-gray-300 text-2xl font-semibold">
-            {i.name}
-          </span>
+          <div className="absolute  top-10 left-6">
+            <span
+              before={i.name}
+              className="text-gray-900 text-2xl font-semibold "
+            >
+              {i.name}
+            </span>
+            <span className="inline-block bg-taiwanIcon bg-cover w-6 h-5 ml-2 align-top"></span>
+          </div>
         </div>
       ))}
     </div>
