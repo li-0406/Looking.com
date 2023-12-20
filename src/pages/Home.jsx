@@ -3,6 +3,7 @@ import Navbar from "../components/Navbar";
 import Header from "../components/Header";
 import Feature from "../components/Feature";
 import PostCard from "../components/PostCard";
+import Footer from "../components/Footer";
 
 const Home = () => {
   const type = [
@@ -112,7 +113,7 @@ const Home = () => {
   ];
 
   return (
-    <div className="home  bg-gray-800">
+    <div className="home ">
       <Navbar />
       <Header />
       <div className="container mx-auto max-w-screen-xl pt-10">
@@ -157,6 +158,7 @@ const Home = () => {
         </h4>
         <Feature dataArray={special} />
       </div>
+      <Footer />
     </div>
   );
 };

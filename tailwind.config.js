@@ -12,6 +12,8 @@ module.exports = {
           "url('https://r-xx.bstatic.com/xdata/images/xphoto/714x300/261387541.jpeg?k=80d1571cedd0a363b9d9b78207914af9b1490c6a859cacd8dc090c866d1bbc94&o=')",
         taiwanIcon:
           "url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAAAq1BMVEX////////V2+zR1+nFzeS8xd+uudmlsdWlsNSgrNLwkZWWpM7viY6NncmLncuImMjugISElcXte4Dten9/kMTrdHnscXZ7i8F1h77qaG3pZWpugrxofLlofLroWl/oWF5gdrVec7TmUljmS1BSbLLeSkpQaK5KZa3gQUflPUPfPUNCXqpDXKfcNjziMTfZMznYLjU2UqHWKjDgJy4wS5zgISjTISffGCDPGSDZ6017AAAAAXRSTlMAQObYZgAAAJFJREFUGBnFwUGOwjAQRNHflXKUGcGeG3D/C7HkBGwMsXs0QgYJskW8B58XHBluPJ0MZ60t5B4rDwcM7reGf8w1kkgCKpgyX9ZOtCU6gwODHUTMJc2QYErZrzWW30IypDB4t9RpnpPGkBNmWkrZ86/zIEyVudsx1ESIDcKExavSEGKDEGaDEYg3AqPW2WCY+JY/oVkkz4kGF1gAAAAASUVORK5CYII=')",
+        footer:
+          "url('https://cf.bstatic.com/psb/capla/static/media/world-map.7d457a5d.png')",
       },
     },
 
