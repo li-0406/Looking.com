@@ -4,7 +4,7 @@ const PostCard = ({ item }) => {
   return (
     <div className="flex gap-4 mt-4">
       {item.map((i, index) => (
-        <div className="w-full relative">
+        <div className="w-full relative" key={i.name}>
           <img
             src={i.url}
             alt=""

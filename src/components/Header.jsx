@@ -14,8 +14,9 @@ import * as locales from "react-date-range/dist/locale";
 //用它來叫出不同版本的語言翻譯，把日曆換成中文
 import { DateRange } from "react-date-range";
 import Select from "react-select";
-
+import { useNavigate } from "react-router-dom";
 const Header = () => {
+  const navigate = useNavigate();
   const [openPeople, setopenPeople] = useState(false);
   const [conditions, setConditions] = useState({
     adult: 1,
@@ -64,6 +65,7 @@ const Header = () => {
     { value: "新北", label: "新北" },
     { value: "宜蘭", label: "宜蘭" },
   ];
+  const [destination, setDestination] = useState(options[0]);
 
   const selectStyle = {
     control: (baseStyles, state) => ({
@@ -88,6 +90,10 @@ const Header = () => {
     }),
   };
 
+  const search = () => {
+    navigate("/hotelsList", { state: { destination, conditions, dates } });
+  };
+
   return (
     <div className="bg-slate-700 pb-20 relative">
       <div className="container mx-auto max-w-screen-xl pt-20">
@@ -99,10 +105,11 @@ const Header = () => {
           <div className="bg-gray-800  rounded-md pl-4 flex-1 flex items-center">
             <FontAwesomeIcon icon={faBed} className=" text-gray-400" />
             <Select
-              defaultValue={options[0]}
+              defaultValue={destination}
               className="w-full px-3"
               options={options}
               styles={selectStyle}
+              onChange={setDestination}
             />
           </div>
           <div className="bg-gray-800 rounded-md pl-4 flex-1 relative flex items-center">
@@ -170,7 +177,10 @@ const Header = () => {
               </div>
             )}
           </div>
-          <button className="bg-slate-600 rounded-md px-6 text-white hover:bg-slate-700 ">
+          <button
+            className="bg-slate-600 rounded-md px-6 text-white hover:bg-slate-700 "
+            onClick={() => search()}
+          >
             搜尋
           </button>
         </div>
