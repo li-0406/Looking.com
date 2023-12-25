@@ -91,7 +91,9 @@ const Header = () => {
   };
 
   const search = () => {
-    navigate("/hotelsList", { state: { destination, conditions, dates } });
+    navigate("/hotelsList", {
+      state: { destination, conditions, dates },
+    });
   };
 
   return (

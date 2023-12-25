@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Link } from "react-router-dom";
 import {
   faBed,
   faCar,
@@ -18,13 +19,15 @@ const Navbar = () => {
   ];
   const [tagActive, setTagActive] = useState("住宿");
   return (
-    <div className="bg-slate-700 pt-5">
+    <div className="bg-slate-700 py-5">
       <div className="container mx-auto max-w-screen-xl">
         <div className="lineOne flex justify-between items-center">
           <div className="left">
-            <span className="text-2xl font-bold cursor-pointer text-slate-100">
-              Looking.com
-            </span>
+            <Link to="/">
+              <span className="text-2xl font-bold cursor-pointer text-slate-100">
+                Looking.com
+              </span>
+            </Link>
           </div>
           <div className="right flex items-center">
             <span className="text-white text-lg  mr-6">TWD</span>

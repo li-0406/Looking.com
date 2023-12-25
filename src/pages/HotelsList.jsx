@@ -1,25 +1,87 @@
 import React, { useState } from "react";
 import Navbar from "../components/Navbar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
-import { useLocation } from "react-router-dom";
+import {
+  faChevronRight,
+  faPlus,
+  faMinus,
+} from "@fortawesome/free-solid-svg-icons";
+import { Link, useLocation } from "react-router-dom";
 import format from "date-fns/format";
 import "react-date-range/dist/styles.css"; // main css file
 import "react-date-range/dist/theme/default.css"; // theme css file
 import * as locales from "react-date-range/dist/locale";
 //用它來叫出不同版本的語言翻譯，把日曆換成中文
 import { DateRange } from "react-date-range";
+import Select from "react-select";
+import { area } from "../hooks/search.js";
 const HotelsList = () => {
   const location = useLocation();
   console.log(location.state);
   const [openCalendar, setOpenCalendar] = useState(false);
-  const [dates, setdates] = useState([
-    {
-      startDate: new Date(),
-      endDate: new Date(),
-      key: "selection",
-    },
-  ]);
+  const [openPeople, setopenPeople] = useState(false);
+
+  const [dates, setdates] = useState(location.state.dates);
+  const [conditions, setConditions] = useState(location.state.conditions);
+  const [destination, setDestination] = useState(location.state.destination);
+  const [lowPrice, setLowPrice] = useState(0);
+  const [hightPrice, setHightPrice] = useState(5000);
+  const people = [
+    { name: "成人", num: conditions.adult },
+    { name: "孩童", num: conditions.children },
+    { name: "客房", num: conditions.room },
+  ];
+
+  const handleCounter = (item, icon) => {
+    setConditions((prev) => {
+      switch (true) {
+        case item.name === "成人":
+          return {
+            ...prev,
+            adult: icon === "plus" ? prev.adult + 1 : prev.adult - 1,
+          };
+        case item.name === "孩童":
+          return {
+            ...prev,
+            children: icon === "plus" ? prev.children + 1 : prev.children - 1,
+          };
+        case item.name === "客房":
+          return {
+            ...prev,
+            room: icon === "plus" ? prev.room + 1 : prev.room - 1,
+          };
+        default:
+          return prev;
+      }
+    });
+  };
+  const selectStyle = {
+    control: (baseStyles, state) => ({
+      ...baseStyles,
+      backgroundColor: "bg-gray-800",
+      borderColor: "gray",
+    }),
+    singleValue: (baseStyles, state) => ({
+      ...baseStyles,
+      color: "white", // 设置选中项字体颜色
+    }),
+    option: (baseStyles, state) => ({
+      ...baseStyles,
+      backgroundColor: state.isSelected ? "lightblue" : "white",
+      ":hover": {
+        backgroundColor: "lightblue",
+      },
+    }),
+    input: (baseStyles) => ({
+      ...baseStyles,
+      color: "gray", // 设置输入文本颜色
+    }),
+  };
+
+  //搜尋
+  const search = () => {
+    console.log(destination, dates, lowPrice, hightPrice, conditions);
+  };
   return (
     <div>
       <Navbar />
@@ -28,42 +90,95 @@ const HotelsList = () => {
           <div>
             <div className="bg-orange-400 p-6">
               <p>目的地/住宿名稱</p>
-              <input
-                type="text"
-                placeholder="要去哪裡?"
-                className="p-2 w-full"
+              <Select
+                defaultValue={destination ? destination : "要去哪裡?"}
+                className="w-full"
+                options={area}
+                styles={selectStyle}
+                onChange={setDestination}
               />
               <p className="mt-4">入住/退房日期</p>
+              <div className="relative">
+                <input
+                  type="text"
+                  className="p-2 w-full "
+                  placeholder={`${format(
+                    dates[0].startDate,
+                    "yyyy-MM-dd"
+                  )} - ${format(dates[0].endDate, "yyyy-MM-dd")}`}
+                  onClick={() => setOpenCalendar(!openCalendar)}
+                />
+                {openCalendar && (
+                  <DateRange
+                    className="absolute -left-15 top-13 z-40"
+                    editableDateInputs={true}
+                    moveRangeOnFirstSelection={false}
+                    minDate={new Date()}
+                    ranges={dates}
+                    locale={locales["zhTW"]}
+                    onChange={(item) => setdates([item.selection])}
+                  />
+                )}
+              </div>
+              <p className="mt-4">每晚最低價格</p>
               <input
                 type="text"
                 className="p-2 w-full"
-                placeholder={`${format(
-                  dates[0].startDate,
-                  "yyyy-MM-dd"
-                )} - ${format(dates[0].endDate, "yyyy-MM-dd")}`}
-                onClick={() => setOpenCalendar(!openCalendar)}
+                placeholder={lowPrice}
+                onChange={(e) => setLowPrice(e.target.value)}
               />
-              {openCalendar && (
-                <DateRange
-                  className="absolute left-1 top-13"
-                  editableDateInputs={true}
-                  moveRangeOnFirstSelection={false}
-                  minDate={new Date()}
-                  ranges={dates}
-                  locale={locales["zhTW"]}
-                  onChange={(item) => setdates([item.selection])}
-                />
-              )}
-              <p className="mt-4">每晚最低價格</p>
-              <input type="text" className="p-2 w-full" />
               <p className="mt-4">每晚最高價格</p>
-              <input type="text" className="p-2 w-full" />
               <input
-                className="block p-2 w-full mt-4"
                 type="text"
-                placeholder="1位大人"
+                className="p-2 w-full"
+                placeholder={hightPrice}
+                onChange={(e) => setHightPrice(e.target.value)}
               />
-              <button className="block bg-orange-200 w-full p-2 mt-3 rounded-md">
+              <div className="relative">
+                <input
+                  className="block p-2 w-full mt-4"
+                  type="text"
+                  placeholder={`${conditions.adult} 位成人 · ${conditions.children} 位小孩 · ${conditions.room} 間房`}
+                  readOnly
+                  onClick={() => setopenPeople(!openPeople)}
+                />
+                {openPeople && (
+                  <div className="bg-green-400 shadow-md rounded-lg p-8 absolute top-12 -left-15 w-[400px]">
+                    {people.map((i, index) => (
+                      <div
+                        className=" flex items-center justify-between"
+                        key={i.name}
+                      >
+                        <span>{i.name}</span>
+                        <div
+                          className={`border rounded-lg p-2 flex gap-4  ${
+                            index === 1 ? "my-2" : ""
+                          }`}
+                        >
+                          <button
+                            onClick={() => handleCounter(i, "minus")}
+                            disabled={i.num === 0}
+                            className={`cursor-pointer ${
+                              i.num === 0 ? "cursor-not-allowed opacity-50" : ""
+                            }`}
+                          >
+                            <FontAwesomeIcon icon={faMinus} />
+                          </button>
+                          <span className="mx-4">{i.num}</span>
+                          <button onClick={() => handleCounter(i, "plus")}>
+                            <FontAwesomeIcon icon={faPlus} />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <button
+                className="block bg-orange-200 w-full p-2 mt-3 rounded-md"
+                onClick={search}
+              >
                 搜尋
               </button>
             </div>
@@ -100,10 +215,13 @@ const HotelsList = () => {
                   <p className="text-gray-400">1 晚、2 位成人</p>
                   <p className="text-2xl my-1">TWD 1,878</p>
                   <p className="text-gray-400">含稅費與其他費用</p>
-                  <button className="bg-slate-500 py-3 px-6 rounded-xl mt-3">
+                  <Link
+                    to="/hotel/123"
+                    className="bg-slate-500 py-3 px-6 rounded-xl mt-3 block"
+                  >
                     查看客房供應情況
                     <FontAwesomeIcon icon={faChevronRight} className="ml-3" />
-                  </button>
+                  </Link>
                 </div>
               </div>
             </div>
