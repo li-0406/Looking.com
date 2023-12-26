@@ -8,8 +8,14 @@ import {
   faTaxi,
   faToriiGate,
 } from "@fortawesome/free-solid-svg-icons";
-
+import { useLocation } from "react-router-dom";
 const Navbar = () => {
+  const location = useLocation();
+  console.log(location.pathname);
+  const submit =
+    location.pathname !== "/register" && location.pathname !== "/login"
+      ? true
+      : false;
   const tag = [
     { icon: faBed, name: "住宿" },
     { icon: faPlane, name: "航班" },
@@ -32,29 +38,38 @@ const Navbar = () => {
           <div className="right flex items-center">
             <span className="text-white text-lg  mr-6">TWD</span>
             <button className="w-6 h-6 rounded-full bg-cover bg-center bg-flag  mr-10 "></button>
-            <button className="px-3 py-1 border border-white border-opacity-50 rounded-lg mr-3  text-white hover:bg-opacity-20 hover:bg-white">
-              註冊
-            </button>
-            <button className="px-3 py-1 border border-white border-opacity-50 rounded-lg  text-white hover:bg-opacity-20 hover:bg-white">
-              登入
-            </button>
+            {submit && (
+              <div>
+                <Link to="/register">
+                  <button className="px-3 py-1 border border-white border-opacity-50 rounded-lg mr-3  text-white hover:bg-opacity-20 hover:bg-white">
+                    註冊
+                  </button>
+                </Link>
+                <Link to="/login">
+                  <button className="px-3 py-1 border border-white border-opacity-50 rounded-lg  text-white hover:bg-opacity-20 hover:bg-white">
+                    登入
+                  </button>
+                </Link>
+              </div>
+            )}
           </div>
         </div>
         <div className="lineTwo flex gap-7 mt-5 ">
-          {tag.map((item) => (
-            <div
-              className={`px-4 py-2 text-white rounded-full cursor-pointer  hover:bg-opacity-10 hover:bg-white ${
-                tagActive === item.name
-                  ? "border border-white bg-white bg-opacity-10"
-                  : ""
-              }`}
-              key={item.name}
-              onClick={() => setTagActive(item.name)}
-            >
-              <FontAwesomeIcon icon={item.icon} />
-              <span className="ml-2">{item.name}</span>
-            </div>
-          ))}
+          {submit &&
+            tag.map((item) => (
+              <div
+                className={`px-4 py-2 text-white rounded-full cursor-pointer  hover:bg-opacity-10 hover:bg-white ${
+                  tagActive === item.name
+                    ? "border border-white bg-white bg-opacity-10"
+                    : ""
+                }`}
+                key={item.name}
+                onClick={() => setTagActive(item.name)}
+              >
+                <FontAwesomeIcon icon={item.icon} />
+                <span className="ml-2">{item.name}</span>
+              </div>
+            ))}
         </div>
       </div>
     </div>

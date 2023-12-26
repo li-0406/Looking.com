@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { gsap } from "gsap";
 import Navbar from "../components/Navbar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -14,8 +14,20 @@ import {
 
 const Hotel = () => {
   let comments = useRef(null);
+  const [openSlider, setOpenSlider] = useState(false);
+  const [sliderIndex, setSiderIndex] = useState(0);
   const list = ["資訊&房價", "設施", "訂房須知", "房客評價"];
-
+  const fakeImg = [
+    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/499880743.jpg?k=d507e0ffc8f85a851dc587c88eb05489961567e79f853c67e4d78949208c64f9&o=&hp=1",
+    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/499694493.jpg?k=54d4d8da798e3a5d1b66269dec3610c782aa263549325e6a95f3cb18713ae558&o=&hp=1",
+    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/499694680.jpg?k=048b0b66ee6b16d365b020487b75003d00d900342ad6465e77bde4ab00202d3d&o=&hp=10",
+    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/499694544.jpg?k=8032a0302aa24b7ca1eef7c6f765aa5784ff67a0aeb4258f3654b12bf99f927d&o=&hp=1",
+    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/499881407.jpg?k=84520bd68c98508c64aed5e877b5446960c2bde5fbe52dbc2e6a197e5899670d&o=&hp=1",
+    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/499882879.jpg?k=bfb116986ef8033ae5d062bf603858a19a3f4bc0a04cb31b49c56d028db6beb2&o=&hp=1",
+    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/499700729.jpg?k=f5d0e975c92e033be4ae791cad1cb0c8e5b50097dbf8400a7086cffebb1ad0df&o=&hp=1",
+    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/499879760.jpg?k=7531e64ae6b5a8e42f268b087c8f6d97bf7218981d410a18ad0ae64aedbfc783&o=&hp=1",
+    "https://cf.bstatic.com/xdata/images/landmark/max1024/199117.webp?k=1c6105f1e823ccbb197720bb652fba811202816a4a8c1b692531ec3ea545c83f&o=",
+  ];
   const handleHover = (e) => {
     gsap.to(comments, {
       css: {
@@ -31,38 +43,57 @@ const Hotel = () => {
         display: "none",
         opacity: 0,
       },
-      ease: "power3.inOut", //拉出來跟css並行
+      ease: "power3.inOut",
     });
+  };
+
+  const slideDirection = (direction) => {
+    if (direction === "left") {
+      sliderIndex === 0
+        ? setSiderIndex(fakeImg.length - 1)
+        : setSiderIndex(sliderIndex - 1);
+    } else {
+      sliderIndex === fakeImg.length - 1
+        ? setSiderIndex(0)
+        : setSiderIndex(sliderIndex + 1);
+    }
   };
 
   return (
     <div>
       {/* 點擊照片 */}
-      <div className="fixed w-full h-screen z-50 bg-black/80 flex justify-center items-center">
-        <div className=" container max-w-screen-lg">
-          <div className="bg-slate-400 flex justify-between p-3">
-            <h1 className="text-2xl">Sunrise Hotel</h1>
-            <span className="text-xl">
-              關閉 <FontAwesomeIcon icon={faXmark} className="text-xl" />
-            </span>
-          </div>
-          <div className="flex items-center justify-between bg-white p-5">
-            <FontAwesomeIcon
-              icon={faAngleLeft}
-              className="text-4xl cursor-pointer"
-            />
-            <img
-              src="https://cf.bstatic.com/xdata/images/hotel/max1024x768/499880743.jpg?k=d507e0ffc8f85a851dc587c88eb05489961567e79f853c67e4d78949208c64f9&o=&hp=1"
-              alt=""
-              className="w-[70%] rounded-xl"
-            />
-            <FontAwesomeIcon
-              icon={faAngleRight}
-              className="text-4xl cursor-pointer"
-            />
+      {openSlider && (
+        <div className="fixed w-full h-screen z-50 bg-black/80 flex justify-center items-center">
+          <div className=" container max-w-screen-lg ">
+            <div className="bg-slate-300 flex justify-between p-3 rounded-t-xl">
+              <h1 className="text-2xl">Sunrise Hotel</h1>
+              <span
+                className="text-xl cursor-pointer"
+                onClick={() => setOpenSlider(false)}
+              >
+                關閉 <FontAwesomeIcon icon={faXmark} className="text-xl" />
+              </span>
+            </div>
+            <div className="flex items-center justify-between bg-white p-5 rounded-b-xl ">
+              <FontAwesomeIcon
+                icon={faAngleLeft}
+                className="text-4xl cursor-pointer flex-1 select-none"
+                onClick={() => slideDirection("left")}
+              />
+              <img
+                src={fakeImg[sliderIndex]}
+                alt=""
+                className="w-[70%] rounded-xl select-none"
+              />
+              <FontAwesomeIcon
+                icon={faAngleRight}
+                className="text-4xl cursor-pointer flex-1 select-none"
+                onClick={() => slideDirection("right")}
+              />
+            </div>
           </div>
         </div>
-      </div>
+      )}
       <Navbar />
 
       <div className="container mx-auto max-w-screen-xl  pt-20">
@@ -106,57 +137,45 @@ const Hotel = () => {
               </div>
             </div>
           </div>
-          <div className="col-span-3 row-span-3">
-            <img
-              onMouseEnter={(e) => handleHover(e)}
-              onMouseOut={(e) => handleHoverExit(e)}
-              src="https://cf.bstatic.com/xdata/images/hotel/max1024x768/499880743.jpg?k=d507e0ffc8f85a851dc587c88eb05489961567e79f853c67e4d78949208c64f9&o=&hp=1"
-              alt=""
-            />
-          </div>
-          <div>
-            <img
-              src="https://cf.bstatic.com/xdata/images/hotel/max1024x768/499880743.jpg?k=d507e0ffc8f85a851dc587c88eb05489961567e79f853c67e4d78949208c64f9&o=&hp=1"
-              alt=""
-            />
-          </div>
-          <div>
-            <img
-              src="https://cf.bstatic.com/xdata/images/hotel/max1024x768/499880743.jpg?k=d507e0ffc8f85a851dc587c88eb05489961567e79f853c67e4d78949208c64f9&o=&hp=1"
-              alt=""
-              className="object-fill"
-            />
-          </div>
-          <div>
-            <img
-              src="https://cf.bstatic.com/xdata/images/hotel/max1024x768/499880743.jpg?k=d507e0ffc8f85a851dc587c88eb05489961567e79f853c67e4d78949208c64f9&o=&hp=1"
-              alt=""
-            />
-          </div>
-          <div>
-            <img
-              src="https://cf.bstatic.com/xdata/images/hotel/max1024x768/499880743.jpg?k=d507e0ffc8f85a851dc587c88eb05489961567e79f853c67e4d78949208c64f9&o=&hp=1"
-              alt=""
-            />
-          </div>
-          <div>
-            <img
-              src="https://cf.bstatic.com/xdata/images/hotel/max1024x768/499880743.jpg?k=d507e0ffc8f85a851dc587c88eb05489961567e79f853c67e4d78949208c64f9&o=&hp=1"
-              alt=""
-            />
-          </div>
-          <div>
-            <img
-              src="https://cf.bstatic.com/xdata/images/hotel/max1024x768/499880743.jpg?k=d507e0ffc8f85a851dc587c88eb05489961567e79f853c67e4d78949208c64f9&o=&hp=1"
-              alt=""
-            />
-          </div>
-          <div>
-            <img
-              src="https://cf.bstatic.com/xdata/images/hotel/max1024x768/499880743.jpg?k=d507e0ffc8f85a851dc587c88eb05489961567e79f853c67e4d78949208c64f9&o=&hp=1"
-              alt=""
-            />
-          </div>
+          {fakeImg.slice(0, 8).map((i, index) =>
+            index >= 7 ? (
+              <div
+                className="relative cursor-pointer"
+                onClick={() => {
+                  setSiderIndex(index);
+                  setOpenSlider(true);
+                }}
+              >
+                <img src={i} alt="" className="h-full" />
+                <div className="bg-black/50 flex justify-center items-center w-full h-full absolute top-[0px]">
+                  <span className="text-2xl text-white">
+                    {fakeImg.length} 張照片
+                  </span>{" "}
+                </div>
+              </div>
+            ) : (
+              <div
+                key={i}
+                className={
+                  index === 0
+                    ? "col-span-3 row-span-3 cursor-pointer"
+                    : "cursor-pointer"
+                }
+                onClick={() => {
+                  setSiderIndex(index);
+                  setOpenSlider(true);
+                }}
+              >
+                <img
+                  onMouseEnter={(e) => (index === 0 ? handleHover(e) : "")}
+                  onMouseOut={(e) => (index === 0 ? handleHoverExit(e) : "")}
+                  src={i}
+                  alt=""
+                  className="h-full"
+                />
+              </div>
+            )
+          )}
         </div>
         {/* 介紹 */}
         <div className="grid grid-cols-6 gap-5  pt-10">
