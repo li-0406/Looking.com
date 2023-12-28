@@ -1,5 +1,6 @@
 import React from "react";
 import Navbar from "../components/Navbar";
+import { Link } from "react-router-dom";
 const login = () => {
   return (
     <div>
@@ -30,6 +31,9 @@ const login = () => {
               註冊
             </div>
           </div>
+          <Link to="/login">
+            <p className="hover:underline mt-5">已有帳號? 按這裡登入</p>
+          </Link>
         </div>
       </div>
     </div>
