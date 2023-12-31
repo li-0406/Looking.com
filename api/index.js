@@ -1,6 +1,10 @@
 import express from "express";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
+import hotelsApiRoute from "./ApiRoutes/hotels.js";
+import roomsApiRoute from "./ApiRoutes/rooms.js";
+import usersApiRoute from "./ApiRoutes/users.js";
+import authApiRoute from "./ApiRoutes/auth.js";
 
 const app = express();
 dotenv.config();
@@ -24,6 +28,21 @@ mongoose.connection.on("disconnected", () => {
 
 app.listen(port, () => {
   console.log(`Example app listening on ports56 ${port}`);
-  console.log(process.env.MONGODB);
   connect();
+});
+app.use(express.json());
+
+app.use("/api/v1/hotels", hotelsApiRoute);
+app.use("/api/v1/rooms", roomsApiRoute);
+app.use("/api/v1/users", usersApiRoute);
+app.use("/api/v1/auth", authApiRoute);
+
+app.use((error, req, res, next) => {
+  const errorStatus = error.status || 500;
+  const errorMessage = error.message || "中間ApiRoute出錯";
+  return res.status(errorStatus).json({
+    //return回去讓他可以被next(error) catch
+    status: errorStatus,
+    Message: errorMessage,
+  });
 });
