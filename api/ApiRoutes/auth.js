@@ -1,9 +1,12 @@
 import express from "express";
+import { register, login } from "../RoutesController/auth.js";
 
 const router = express.Router();
 
-router.get("/", (req, res) => {
-  res.send("auth.js");
-});
+//註冊
+router.post("/register", register);
+
+//登入
+router.post("/login", login);
 
 export default router;

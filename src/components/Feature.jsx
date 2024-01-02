@@ -1,4 +1,5 @@
 import React from "react";
+import useFetch from "../hooks/useFetch";
 
 const Feature = ({ dataArray }) => {
   return (
@@ -12,25 +13,6 @@ const Feature = ({ dataArray }) => {
             </span>
             {item.sum && (
               <span className="text-gray-400 text-sm">{item.sum}間民宿</span>
-            )}
-            {item.area && (
-              <div>
-                <span className="text-gray-400  block  mb-1">{item.area}</span>
-                <p>
-                  <span className="bg-slate-600 p-1  rounded text-gray-200 text-sm">
-                    {item.value}
-                  </span>
-                  <span className="text-gray-200 ml-2 text-sm">
-                    {item.value > 9.0 ? "好極了" : "很棒"}
-                  </span>
-                </p>
-                <p className="text-right text-gray-200 font-semibold text-xl mt-8">
-                  <span className="text-gray-400  inline-block align-text-top mr-1 font-medium">
-                    起價
-                  </span>
-                  TWD {item.price.toLocaleString()}
-                </p>
-              </div>
             )}
           </div>
         </div>

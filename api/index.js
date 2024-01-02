@@ -5,6 +5,7 @@ import hotelsApiRoute from "./ApiRoutes/hotels.js";
 import roomsApiRoute from "./ApiRoutes/rooms.js";
 import usersApiRoute from "./ApiRoutes/users.js";
 import authApiRoute from "./ApiRoutes/auth.js";
+import cookieParser from "cookie-parser";
 
 const app = express();
 dotenv.config();
@@ -30,7 +31,8 @@ app.listen(port, () => {
   console.log(`Example app listening on ports56 ${port}`);
   connect();
 });
-app.use(express.json());
+app.use(express.json()); //可以接收json
+app.use(cookieParser()); //自動抓取cookie
 
 app.use("/api/v1/hotels", hotelsApiRoute);
 app.use("/api/v1/rooms", roomsApiRoute);

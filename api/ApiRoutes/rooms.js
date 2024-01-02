@@ -7,14 +7,15 @@ import {
   updatedRoom,
   deleteRoom,
 } from "../RoutesController/rooms.js";
+import { verifyAdmin } from "../JWT_Token.js";
 
 const router = express.Router();
 //創建房間
-router.post("/:hotelid", createRoom);
+router.post("/:hotelid", verifyAdmin, createRoom);
 //更改
-router.put("/:id", updatedRoom);
+router.put("/:id", verifyAdmin, updatedRoom);
 //刪除
-router.delete("/:hotelid/:id", deleteRoom);
+router.delete("/:hotelid/:id", verifyAdmin, deleteRoom);
 //讀取單筆資料
 router.get("/:id", getRoom);
 //所有資料

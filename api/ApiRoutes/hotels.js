@@ -6,20 +6,21 @@ import {
   deleteHotel,
   getAllHotels,
 } from "../RoutesController/hotels.js";
+import { verifyAdmin } from "../JWT_Token.js";
 
 const router = express.Router();
 
 //創建資料
-router.post("/", createHotel);
+router.post("/", verifyAdmin, createHotel);
 
-//拿資料
+//拿單筆資料
 router.get("/find/:id", getHotel);
 
 //修改
 router.put("/:id", updatedHotel);
 
 //刪除
-router.delete("/:id", deleteHotel);
+router.delete("/:id", verifyAdmin, deleteHotel);
 
 //所有飯店
 router.get("/", getAllHotels);

@@ -7,11 +7,11 @@ const UserSchma = new mongoose.Schema(
       required: true, //必須上傳
       unique: true, //且不能重複，並免同樣姓名的使用者
     },
-    email: {
-      type: String,
-      required: true,
-      unique: true, //信箱也是必須獨一無二
-    },
+    // email: {
+    //   type: String,
+    //   required: true,
+    //   unique: true, //信箱也是必須獨一無二
+    // },
     password: {
       type: String, //密碼
       required: true,

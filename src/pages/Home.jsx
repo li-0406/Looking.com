@@ -4,6 +4,7 @@ import Header from "../components/Header";
 import Feature from "../components/Feature";
 import PostCard from "../components/PostCard";
 import Footer from "../components/Footer";
+import Popular from "../components/Popular";
 
 const Home = () => {
   const type = [
@@ -156,7 +157,7 @@ const Home = () => {
         <h4 className="text-gray-300 font-semibold text-2xl mb-4 mt-15">
           人氣民宿、公寓類型住宿
         </h4>
-        <Feature dataArray={special} />
+        <Popular />
       </div>
       <Footer />
     </div>
