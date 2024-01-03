@@ -49,10 +49,39 @@ export const deleteHotel = async (req, res, next) => {
 
 //所有飯店
 export const getAllHotels = async (req, res, next) => {
+  const withQuery = req.query;
   try {
-    const hotelsList = await Hotel.find();
+    const hotelsList = await Hotel.find({
+      ...withQuery,
+    }).limit(8);
     res.status(200).json(hotelsList);
   } catch (error) {
     next(errorMessage(500, "無法抓取所有飯店資料", error));
+  }
+};
+
+//飯店種類(ex:飯店,公寓)
+export const amountOfType = async (req, res, next) => {
+  const type = req.query.type.split(",");
+  try {
+    const list = await Promise.all(
+      type.map((type) => Hotel.countDocuments({ type: type }))
+    );
+    res.status(200).json(list);
+  } catch (error) {
+    next(errorMessage(500, "無法抓取住宿種類", error));
+  }
+};
+
+//該縣市住宿數量
+export const amountOfCities = async (req, res, next) => {
+  const type = req.query.cities.split(",");
+  try {
+    const list = await Promise.all(
+      type.map((city) => Hotel.countDocuments({ city: city }))
+    );
+    res.status(200).json(list);
+  } catch (error) {
+    next(errorMessage(500, "無法統計各個城市的提供住宿的數量", error));
   }
 };

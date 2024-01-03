@@ -1,10 +1,12 @@
 import React from "react";
 import useFetch from "../hooks/useFetch";
 
-const Feature = ({ dataArray }) => {
+const Feature = ({ dataArray, url }) => {
+  const { data, loading, error } = useFetch(url);
+  console.log(data);
   return (
     <div className="flex gap-4">
-      {dataArray.map((item) => (
+      {dataArray.map((item, index) => (
         <div key={item.name} className="cursor-pointer w-full">
           <img src={item.url} className="rounded-xl mb-2 w-full" alt="" />
           <div className="flex flex-col">
@@ -12,7 +14,7 @@ const Feature = ({ dataArray }) => {
               {item.name}
             </span>
             {item.sum && (
-              <span className="text-gray-400 text-sm">{item.sum}間民宿</span>
+              <span className="text-gray-400 text-sm">{data[index]}間民宿</span>
             )}
           </div>
         </div>

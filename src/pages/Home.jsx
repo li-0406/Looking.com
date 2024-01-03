@@ -113,6 +113,11 @@ const Home = () => {
     },
   ];
 
+  const typeUrl = `/hotels/amountoftype?type=${type.map((type) => type.name)}`;
+  const citiesUrl = `/hotels/amountofcities?cities=${taiwan.map(
+    (city) => city.name
+  )}`;
+
   return (
     <div className="home ">
       <Navbar />
@@ -145,7 +150,7 @@ const Home = () => {
         <span className="text-gray-400 mb-4 block">
           這些熱門目的地魅力無窮，等你來體驗！
         </span>
-        <Feature dataArray={taiwan} />
+        <Feature dataArray={taiwan} url={citiesUrl} />
         <h4 className="text-gray-300 font-semibold text-2xl mb-1 mt-15">
           新潮目的地
         </h4>
