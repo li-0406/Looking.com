@@ -11,7 +11,6 @@ import {
 import { useLocation } from "react-router-dom";
 const Navbar = () => {
   const location = useLocation();
-  console.log(location.pathname);
   const submit =
     location.pathname !== "/register" && location.pathname !== "/login"
       ? true
