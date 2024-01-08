@@ -201,7 +201,7 @@ const HotelsList = () => {
           </div>
           <div className="col-span-3">
             <h1 className="text-2xl mb-6">
-              {city.value}：找到 {data.length} 間住宿
+              {city.value || "推薦熱門景點"}：找到 {data.length} 間住宿
             </h1>
 
             {data.map((i) => (
