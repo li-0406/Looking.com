@@ -59,7 +59,7 @@ export const login = async (req, res, next) => {
     res
       .cookie("JWT_token", token, { httpOnly: true }) //把token放到cookie
       .status(200)
-      .json(`${userData.username}登入成功`);
+      .json({ userData, msg: "登入成功" });
   } catch (error) {
     next(errorMessage(500, "登入失敗", error));
   }

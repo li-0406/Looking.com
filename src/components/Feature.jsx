@@ -3,7 +3,6 @@ import useFetch from "../hooks/useFetch";
 
 const Feature = ({ dataArray, url }) => {
   const { data, loading, error } = useFetch(url);
-  console.log(data);
   return (
     <div className="flex gap-4">
       {dataArray.map((item, index) => (

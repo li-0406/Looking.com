@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, dispatch, useContext } from "react";
 import Navbar from "../components/Navbar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -15,17 +15,29 @@ import * as locales from "react-date-range/dist/locale";
 import { DateRange } from "react-date-range";
 import Select from "react-select";
 import { area } from "../hooks/search.js";
+import { new_Options } from "../components/constants/actionTypes.js";
+import { OptionsContext } from "../components/context/OptionsContext.js";
+import useFetch from "../hooks/useFetch.js";
 const HotelsList = () => {
+  const { city, date, options, dispatch } = useContext(OptionsContext);
+
   const location = useLocation();
-  console.log(location.state);
   const [openCalendar, setOpenCalendar] = useState(false);
   const [openPeople, setopenPeople] = useState(false);
 
-  const [dates, setdates] = useState(location.state.dates);
-  const [conditions, setConditions] = useState(location.state.conditions);
-  const [destination, setDestination] = useState(location.state.destination);
+  const [dates, setdates] = useState(date);
+  const [conditions, setConditions] = useState(options);
+  const [destination, setDestination] = useState(city);
+
+  const searchUrl = `/hotels?${
+    destination ? "city=" + destination.value : "popularHotel=true"
+  }`;
+  const [fetchDataUrl, setFetchDataUrl] = useState(searchUrl);
+  const { data, loading, error } = useFetch(fetchDataUrl);
+  console.log(fetchDataUrl);
   const [lowPrice, setLowPrice] = useState(0);
   const [hightPrice, setHightPrice] = useState(5000);
+
   const people = [
     { name: "成人", num: conditions.adult },
     { name: "孩童", num: conditions.children },
@@ -80,7 +92,11 @@ const HotelsList = () => {
 
   //搜尋
   const search = () => {
-    console.log(destination, dates, lowPrice, hightPrice, conditions);
+    dispatch({
+      type: new_Options,
+      payload: { city: destination, options: conditions, date: dates },
+    });
+    setFetchDataUrl(searchUrl);
   };
   return (
     <div>
@@ -184,47 +200,62 @@ const HotelsList = () => {
             </div>
           </div>
           <div className="col-span-3">
-            <h1 className="text-2xl mb-6">台北：找到 283 間住宿</h1>
+            <h1 className="text-2xl mb-6">
+              {city.value}：找到 {data.length} 間住宿
+            </h1>
 
-            <div className="flex gap-6 border p-5 rounded-xl">
-              <img
-                src="https://cf.bstatic.com/xdata/images/hotel/square600/222597628.webp?k=30161b6d16aad3a7aeb6ca67cf62785f68a6bc3342eab3563099ba242ad5702b&o="
-                alt=""
-                className="w-[30%] h-[30%] rounded-xl"
-              />
-              <div>
-                <h2 className="text-3xl">Hotel PaPa Whale</h2>
-                <p className="mt-3">萬華區 , 台北．距中心1.3公里</p>
-                <div className="mt-10 border-l-2 pl-3">
-                  <p>精緻雙床房</p>
-                  <p>2張單人床</p>
-                </div>
-              </div>
-
-              <div className="flex-1 flex flex-col justify-between items-end">
-                <div className="flex">
-                  <div>
-                    <p className="text-right">非常好</p>
-                    <p className="text-gray-400">6992則評論</p>
-                  </div>
-                  <div className="bg-slate-300 flex items-center p-3 rounded-xl ml-2">
-                    <span className="text-xl">8.3</span>
+            {data.map((i) => (
+              <div
+                className="flex gap-6 border p-5 rounded-xl my-4"
+                key={i._id}
+              >
+                <img
+                  src={i.photos[0]}
+                  alt=""
+                  className="w-[30%] h-[30%] rounded-xl"
+                />
+                <div>
+                  <h2 className="text-3xl">{i.name}</h2>
+                  <p className="mt-3">{i.distance}</p>
+                  <div className="mt-10 border-l-2 pl-3">
+                    <p>精緻雙床房</p>
+                    <p>2張單人床</p>
                   </div>
                 </div>
-                <div className="text-right">
-                  <p className="text-gray-400">1 晚、2 位成人</p>
-                  <p className="text-2xl my-1">TWD 1,878</p>
-                  <p className="text-gray-400">含稅費與其他費用</p>
-                  <Link
-                    to="/hotel/123"
-                    className="bg-slate-500 py-3 px-6 rounded-xl mt-3 block"
-                  >
-                    查看客房供應情況
-                    <FontAwesomeIcon icon={faChevronRight} className="ml-3" />
-                  </Link>
+
+                <div className="flex-1 flex flex-col justify-between items-end">
+                  <div className="flex">
+                    <div>
+                      <p className="text-right">
+                        {i.rating > 9.5 ? "非常好" : "傑出"}
+                      </p>
+                      <p className="text-gray-400">{i.comments}則評論</p>
+                    </div>
+                    <div className="bg-slate-300 flex items-center p-3 rounded-xl ml-2">
+                      <span className="text-xl">{i.rating}</span>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-gray-400">
+                      {conditions.adult} 位成人
+                      {conditions.children != 0 &&
+                        `、${conditions.children} 位小孩`}
+                    </p>
+                    <p className="text-2xl my-1">
+                      TWD {i.cheapestPrice.toLocaleString()}
+                    </p>
+                    <p className="text-gray-400">含稅費與其他費用</p>
+                    <Link
+                      to="/hotel/123"
+                      className="bg-slate-500 py-3 px-6 rounded-xl mt-3 block"
+                    >
+                      查看客房供應情況
+                      <FontAwesomeIcon icon={faChevronRight} className="ml-3" />
+                    </Link>
+                  </div>
                 </div>
               </div>
-            </div>
+            ))}
           </div>
         </div>
       </div>

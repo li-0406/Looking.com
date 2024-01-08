@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBed,
@@ -15,14 +15,24 @@ import * as locales from "react-date-range/dist/locale";
 import { DateRange } from "react-date-range";
 import Select from "react-select";
 import { useNavigate } from "react-router-dom";
+import { OptionsContext } from "./context/OptionsContext.js";
+import { new_Options } from "./constants/actionTypes.js";
+
 const Header = () => {
+  const { city, date, options, dispatch } = useContext(OptionsContext);
   const navigate = useNavigate();
   const [openPeople, setopenPeople] = useState(false);
-  const [conditions, setConditions] = useState({
-    adult: 1,
-    children: 0,
-    room: 1,
-  });
+  const [conditions, setConditions] = useState(options); //人數
+  const [destination, setDestination] = useState(city); //地區
+  const [dates, setdates] = useState([
+    //時間
+    {
+      startDate: new Date(),
+      endDate: new Date(),
+      key: "selection",
+    },
+  ]);
+
   const handleCounter = (item, icon) => {
     setConditions((prev) => {
       switch (true) {
@@ -53,19 +63,12 @@ const Header = () => {
   ];
 
   const [openCalendar, setOpenCalendar] = useState(false);
-  const [dates, setdates] = useState([
-    {
-      startDate: new Date(),
-      endDate: new Date(),
-      key: "selection",
-    },
-  ]);
-  const options = [
+
+  const areaList = [
     { value: "台北", label: "台北" },
     { value: "新北", label: "新北" },
     { value: "宜蘭", label: "宜蘭" },
   ];
-  const [destination, setDestination] = useState(options[0]);
 
   const selectStyle = {
     control: (baseStyles, state) => ({
@@ -90,7 +93,15 @@ const Header = () => {
     }),
   };
 
-  const search = () => {
+  const search = async () => {
+    await dispatch({
+      type: new_Options,
+      payload: {
+        city: destination,
+        date: dates,
+        options: conditions,
+      },
+    });
     navigate("/hotelsList", {
       state: { destination, conditions, dates },
     });
@@ -109,7 +120,7 @@ const Header = () => {
             <Select
               defaultValue={destination}
               className="w-full px-3"
-              options={options}
+              options={areaList}
               styles={selectStyle}
               onChange={setDestination}
             />
@@ -181,7 +192,7 @@ const Header = () => {
           </div>
           <button
             className="bg-slate-600 rounded-md px-6 text-white hover:bg-slate-700 "
-            onClick={() => search()}
+            onClick={search}
           >
             搜尋
           </button>
