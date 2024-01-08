@@ -25,18 +25,27 @@ const HotelsList = () => {
   const [openCalendar, setOpenCalendar] = useState(false);
   const [openPeople, setopenPeople] = useState(false);
 
-  const [dates, setdates] = useState(date);
+  const [dates, setdates] = useState(
+    date[0]
+      ? date
+      : [
+          {
+            startDate: new Date(),
+            endDate: new Date(),
+            key: "selection",
+          },
+        ]
+  );
   const [conditions, setConditions] = useState(options);
   const [destination, setDestination] = useState(city);
-
+  const [lowPrice, setLowPrice] = useState(0);
+  const [hightPrice, setHightPrice] = useState(9999);
   const searchUrl = `/hotels?${
     destination ? "city=" + destination.value : "popularHotel=true"
-  }`;
+  }&lowestPrice=${lowPrice}&highestPrice=${hightPrice}`;
   const [fetchDataUrl, setFetchDataUrl] = useState(searchUrl);
   const { data, loading, error } = useFetch(fetchDataUrl);
   console.log(fetchDataUrl);
-  const [lowPrice, setLowPrice] = useState(0);
-  const [hightPrice, setHightPrice] = useState(5000);
 
   const people = [
     { name: "成人", num: conditions.adult },
@@ -246,7 +255,7 @@ const HotelsList = () => {
                     </p>
                     <p className="text-gray-400">含稅費與其他費用</p>
                     <Link
-                      to="/hotel/123"
+                      to={`/hotel/${i._id}`}
                       className="bg-slate-500 py-3 px-6 rounded-xl mt-3 block"
                     >
                       查看客房供應情況
