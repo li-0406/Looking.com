@@ -50,7 +50,6 @@ export const deleteHotel = async (req, res, next) => {
 //所有飯店
 export const getAllHotels = async (req, res, next) => {
   const { lowestPrice, highestPrice, ...withQuery } = req.query;
-  console.log(req.query);
   try {
     const hotelsList = await Hotel.find({
       ...withQuery,

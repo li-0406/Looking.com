@@ -5,6 +5,7 @@ import hotelsApiRoute from "./ApiRoutes/hotels.js";
 import roomsApiRoute from "./ApiRoutes/rooms.js";
 import usersApiRoute from "./ApiRoutes/users.js";
 import authApiRoute from "./ApiRoutes/auth.js";
+import orderApiRoute from "./ApiRoutes/order.js";
 import cookieParser from "cookie-parser";
 
 const app = express();
@@ -38,6 +39,7 @@ app.use("/api/v1/hotels", hotelsApiRoute);
 app.use("/api/v1/rooms", roomsApiRoute);
 app.use("/api/v1/users", usersApiRoute);
 app.use("/api/v1/auth", authApiRoute);
+app.use("/api/v1/order", orderApiRoute);
 
 app.use((error, req, res, next) => {
   const errorStatus = error.status || 500;
