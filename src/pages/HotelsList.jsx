@@ -18,6 +18,7 @@ import { area } from "../hooks/search.js";
 import { new_Options } from "../components/constants/actionTypes.js";
 import { OptionsContext } from "../components/context/OptionsContext.js";
 import useFetch from "../hooks/useFetch.js";
+import { ReservationDatesAndPrice } from "../datesCalcualate.js";
 const HotelsList = () => {
   const { city, date, options, dispatch } = useContext(OptionsContext);
 
@@ -45,7 +46,17 @@ const HotelsList = () => {
   }&lowestPrice=${lowPrice}&highestPrice=${hightPrice}`;
   const [fetchDataUrl, setFetchDataUrl] = useState(searchUrl);
   const { data, loading, error } = useFetch(fetchDataUrl);
-  console.log(fetchDataUrl);
+  data.forEach((i) => {
+    console.log(date[0]?.startDate, date[0]?.endDate, i.cheapestPrice);
+    const { datesLength, totalHotelsPrice } = ReservationDatesAndPrice(
+      date[0]?.startDate,
+      date[0]?.endDate,
+      i.cheapestPrice
+    );
+    i["datesLength"] = datesLength;
+    i["totalHotelsPrice"] = totalHotelsPrice;
+  });
+  console.log(data);
 
   const people = [
     { name: "成人", num: conditions.adult },
@@ -244,14 +255,15 @@ const HotelsList = () => {
                       <span className="text-xl">{i.rating}</span>
                     </div>
                   </div>
-                  <div className="text-right">
+                  <div className="text-right pt-5">
+                    <p>總共 {i.datesLength} 晚</p>
                     <p className="text-gray-400">
                       {conditions.adult} 位成人
                       {conditions.children != 0 &&
                         `、${conditions.children} 位小孩`}
                     </p>
                     <p className="text-2xl my-1">
-                      TWD {i.cheapestPrice.toLocaleString()}
+                      TWD {i.totalHotelsPrice.toLocaleString()}
                     </p>
                     <p className="text-gray-400">含稅費與其他費用</p>
                     <Link

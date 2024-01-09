@@ -1,8 +1,11 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import useFetch from "../hooks/useFetch";
 
-const Reservationbtn = ({ onClose }) => {
+const Reservationbtn = ({ onClose, id }) => {
+  const { data, loading, error } = useFetch(`/rooms/findHotel/${id}`);
+  console.log(data);
   return (
     <div className="fixed w-full h-screen z-50 bg-black/50 flex justify-center items-center">
       <div className="container max-w-screen-lg">
@@ -24,21 +27,24 @@ const Reservationbtn = ({ onClose }) => {
               </tr>
             </thead>
             <tbody className="text-center">
-              <tr className="border hover:bg-gray-100">
-                <td className="p-3">頂級商務套房</td>
-                <td className="p-3">2</td>
-                <td className="p-3">TWD 2350</td>
-                <td className="p-3">
-                  <label className="block">
-                    <input type="checkbox" />
-                    102
-                  </label>
-                  <label>
-                    <input type="checkbox" />
-                    103
-                  </label>
-                </td>
-              </tr>
+              {data.map((i) => (
+                <tr className="border hover:bg-gray-100" key={i._id}>
+                  <td className="p-3">
+                    <p>{i.title}</p>
+                    <p>{i.desc}</p>
+                  </td>
+                  <td className="p-3">{i.maxPeople}</td>
+                  <td className="p-3">TWD {i.price.toLocaleString()}</td>
+                  <td className="p-3">
+                    {i.roomNumbers?.map((j) => (
+                      <label className="block" key={i._id}>
+                        <input type="checkbox" value={i._id} />
+                        {j.number}
+                      </label>
+                    ))}
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
           <div className="flex justify-center">

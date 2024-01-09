@@ -70,7 +70,8 @@ const Hotel = () => {
 
   return (
     <div>
-      {openReservation && <Reservationbtn onClose={close} />}
+      {/* 現在預定 */}
+      {openReservation && <Reservationbtn onClose={close} id={id} />}
       {/* 點擊照片 */}
       {openSlider && (
         <div className="fixed w-full h-screen z-50 bg-black/80 flex justify-center items-center">
