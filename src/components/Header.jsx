@@ -66,8 +66,11 @@ const Header = () => {
 
   const areaList = [
     { value: "台北", label: "台北" },
-    { value: "新北", label: "新北" },
-    { value: "宜蘭", label: "宜蘭" },
+    { value: "台中", label: "台中" },
+    { value: "蘇澳鎮", label: "蘇澳鎮" },
+    { value: "台南", label: "台南" },
+    { value: "高雄", label: "高雄" },
+    { value: "礁溪鄉", label: "礁溪鄉" },
   ];
 
   const selectStyle = {
@@ -102,9 +105,9 @@ const Header = () => {
         options: conditions,
       },
     });
-    // navigate("/hotelsList", {
-    //   state: { destination, conditions, dates },
-    // });
+    navigate("/hotelsList", {
+      // state: { destination, conditions, dates },
+    });
   };
 
   return (

@@ -5,12 +5,14 @@ import useFetch from "../hooks/useFetch";
 import { OptionsContext } from "./context/OptionsContext.js";
 import { LoginContext } from "./context/LoginContext.js";
 import axios from "axios";
+import format from "date-fns/format";
 import useCreateOrder from "../hooks/useCreateOrder.js";
 import { ReservationDatesList } from "../datesCalcualate.js";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import { useNavigate } from "react-router-dom";
-const Reservationbtn = ({ onClose, id }) => {
+import { motion } from "framer-motion";
+const Reservationbtn = ({ onClose, id, night }) => {
   const navgate = useNavigate();
   const { data, loading, error } = useFetch(`/rooms/findHotel/${id}`);
 
@@ -60,7 +62,14 @@ const Reservationbtn = ({ onClose, id }) => {
     }
   };
 
-  const handleCheckBox = (e) => {
+  const handleCheckBox = (e, price) => {
+    //總額
+    setOrderData((item) => {
+      const factor = e.target.checked ? 1 : -1;
+      const newTotalPrice = item.totalPrice + factor * price * night;
+      return { ...item, totalPrice: newTotalPrice };
+    });
+
     setRoomNumber(
       e.target.checked
         ? [...roomNumber, e.target.value]
@@ -74,6 +83,7 @@ const Reservationbtn = ({ onClose, id }) => {
   const handleClick = () => {
     try {
       setOrderData((item) => ({ ...item, RoomNumberId: roomNumber }));
+      console.log(orderData);
       setCreateOrderState(true);
       updatedReservationDates();
       setOpen(true);
@@ -145,51 +155,51 @@ const Reservationbtn = ({ onClose, id }) => {
                       TWD {(i.price * night).toLocaleString()}
                     </td>
                     <td className="p-3">
-                    {i.roomNumbers?.map((j, index) => (
-                      <label className="block" key={index}>
-                        <input
-                          type="checkbox"
-                          value={j._id}
-                          onChange={handleCheckBox}
-                          disabled={isNotAvailableDate(j)}
-                        />
-                        <span
-                          className={
-                            isNotAvailableDate(j) ? "text-gray-300" : ""
-                          }
-                        >
-                          {j.number}
-                        </span>
-                      </label>
-                    ))}
+                      {i.roomNumbers?.map((j, index) => (
+                        <label className="block" key={index}>
+                          <input
+                            type="checkbox"
+                            value={j._id}
+                            onChange={(e) => handleCheckBox(e, i.price)}
+                            disabled={isNotAvailableDate(j)}
+                          />
+                          <span
+                            className={
+                              isNotAvailableDate(j) ? "text-gray-300" : ""
+                            }
+                          >
+                            {j.number}
+                          </span>
+                        </label>
+                      ))}
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
             <div className="flex justify-center">
-            <button
-              disabled={roomNumber.length == 0}
-              className={`p-3 border rounded-lg m-3 ${
-                roomNumber.length == 0 ? "cursor-not-allowed" : ""
-              }`}
-              onClick={handleClick}
-            >
-              現在預訂
-            </button>
+              <button
+                disabled={roomNumber.length == 0}
+                className={`p-3 border rounded-lg m-3 ${
+                  roomNumber.length == 0 ? "cursor-not-allowed" : ""
+                }`}
+                onClick={handleClick}
+              >
+                現在預訂
+              </button>
             </div>
           </div>
         </div>
         <Snackbar
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-        open={open}
-        autoHideDuration={2000}
-        onClose={handleClose}
-      >
-        <Alert variant="filled" onClose={handleClose} severity="success">
-          預定完成
-        </Alert>
-      </Snackbar>
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+          open={open}
+          autoHideDuration={2000}
+          onClose={handleClose}
+        >
+          <Alert variant="filled" onClose={handleClose} severity="success">
+            預定完成
+          </Alert>
+        </Snackbar>
       </motion.div>
       ;
     </div>
