@@ -82,6 +82,30 @@ export const updatedRoom = async (req, res, next) => {
   }
 };
 
+//更新上傳unavailableDates的資料
+export const updatedRoomDates = async (req, res, next) => {
+  const roomNumberId = req.params.id;
+  const dates = req.body.dates;
+  try {
+    const updatedRoomDates = await Room.updateOne(
+      { "roomNumbers._id": roomNumberId },
+      {
+        $push: {
+          "roomNumbers.$.unavailableDates": dates,
+        },
+      }
+    );
+    res.status(200).json({
+      msg: "上傳日期成功",
+      updatedRoomDates,
+    });
+  } catch (error) {
+    next(
+      errorMessage(500, "預訂日期更新失敗，可能為格式錯誤或是找不到其ID", error)
+    );
+  }
+};
+
 //刪除(要刪Room資料庫跟該飯店的rooms欄位的對應id)
 export const deleteRoom = async (req, res, next) => {
   const hotelId = req.params.hotelid;
