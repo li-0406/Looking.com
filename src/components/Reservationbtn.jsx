@@ -95,14 +95,6 @@ const Reservationbtn = ({ onClose, id }) => {
 
   const handleClose = () => setOpen(false);
 
-  const action = (
-    <>
-      <div className="pr-5" onClick={handleClose}>
-        UNDO
-      </div>
-    </>
-  );
-
   return (
     <div className="fixed w-full h-screen z-50 bg-black/50 flex justify-center items-center">
       <div className="container max-w-screen-lg">
