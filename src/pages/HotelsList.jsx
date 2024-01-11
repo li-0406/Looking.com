@@ -6,7 +6,7 @@ import {
   faPlus,
   faMinus,
 } from "@fortawesome/free-solid-svg-icons";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import format from "date-fns/format";
 import "react-date-range/dist/styles.css"; // main css file
 import "react-date-range/dist/theme/default.css"; // theme css file
@@ -19,13 +19,13 @@ import { new_Options } from "../components/constants/actionTypes.js";
 import { OptionsContext } from "../components/context/OptionsContext.js";
 import useFetch from "../hooks/useFetch.js";
 import { ReservationDatesAndPrice } from "../datesCalcualate.js";
+import Tooltip, { tooltipClasses } from "@mui/material/Tooltip";
+import { styled } from "@mui/material";
 const HotelsList = () => {
   const { city, date, options, dispatch } = useContext(OptionsContext);
-
-  const location = useLocation();
+  const navigate = useNavigate();
   const [openCalendar, setOpenCalendar] = useState(false);
   const [openPeople, setopenPeople] = useState(false);
-
   const [dates, setdates] = useState(
     date[0]
       ? date
@@ -118,6 +118,16 @@ const HotelsList = () => {
     });
     setFetchDataUrl(searchUrl);
   };
+
+  const toDetail = (i) => {
+    navigate(`/hotel/${i._id}`, {
+      state: {
+        datesLength: i.datesLength,
+        totalHotelsPrice: i.totalHotelsPrice,
+      },
+    });
+  };
+
   return (
     <div>
       <Navbar />
@@ -256,23 +266,55 @@ const HotelsList = () => {
                     </div>
                   </div>
                   <div className="text-right pt-5">
-                    <p>總共 {i.datesLength} 晚</p>
+                    {i.datesLength ? (
+                      <p>總共 {i.datesLength} 晚</p>
+                    ) : (
+                      <p>請先選擇住宿日期</p>
+                    )}
+
                     <p className="text-gray-400">
                       {conditions.adult} 位成人
-                      {conditions.children != 0 &&
+                      {conditions.children !== 0 &&
                         `、${conditions.children} 位小孩`}
                     </p>
                     <p className="text-2xl my-1">
-                      TWD {i.totalHotelsPrice.toLocaleString()}
+                      {i.totalHotelsPrice
+                        ? `TWD ${i.totalHotelsPrice.toLocaleString()}`
+                        : `TWD ${i.cheapestPrice.toLocaleString()}`}
                     </p>
                     <p className="text-gray-400">含稅費與其他費用</p>
-                    <Link
-                      to={`/hotel/${i._id}`}
-                      className="bg-slate-500 py-3 px-6 rounded-xl mt-3 block"
-                    >
-                      查看客房供應情況
-                      <FontAwesomeIcon icon={faChevronRight} className="ml-3" />
-                    </Link>
+
+                    {i.datesLength ? (
+                      <div
+                        className="bg-slate-500 py-3 px-6 rounded-xl mt-3 block cursor-pointer"
+                        onClick={() => toDetail(i)}
+                      >
+                        查看客房供應情況
+                        <FontAwesomeIcon
+                          icon={faChevronRight}
+                          className="ml-3"
+                        />
+                      </div>
+                    ) : (
+                      <div>
+                        <Tooltip
+                          title={
+                            <span>
+                              請先輸入住宿日期，並按左側 搜尋 查看結果
+                            </span>
+                          }
+                          followCursor
+                        >
+                          <div className="bg-slate-500 py-3 px-6 rounded-xl mt-3 block cursor-pointer">
+                            查看客房供應情況
+                            <FontAwesomeIcon
+                              icon={faChevronRight}
+                              className="ml-3"
+                            />
+                          </div>
+                        </Tooltip>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>

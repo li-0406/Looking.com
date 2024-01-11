@@ -78,7 +78,7 @@ const Header = () => {
     }),
     singleValue: (baseStyles, state) => ({
       ...baseStyles,
-      color: "white", // 设置选中项字体颜色
+      color: "white", // 字體顏色
     }),
     option: (baseStyles, state) => ({
       ...baseStyles,
@@ -89,7 +89,7 @@ const Header = () => {
     }),
     input: (baseStyles) => ({
       ...baseStyles,
-      color: "gray", // 设置输入文本颜色
+      color: "gray", // 文字顏色
     }),
   };
 
@@ -102,9 +102,9 @@ const Header = () => {
         options: conditions,
       },
     });
-    navigate("/hotelsList", {
-      state: { destination, conditions, dates },
-    });
+    // navigate("/hotelsList", {
+    //   state: { destination, conditions, dates },
+    // });
   };
 
   return (

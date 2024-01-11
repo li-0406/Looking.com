@@ -15,6 +15,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import useFetch from "../hooks/useFetch";
 import { LoginContext } from "../components/context/LoginContext";
 import Reservationbtn from "../components/Reservationbtn";
+
 const Hotel = () => {
   const { user } = useContext(LoginContext);
   const location = useLocation();
@@ -71,7 +72,13 @@ const Hotel = () => {
   return (
     <div>
       {/* 現在預定 */}
-      {openReservation && <Reservationbtn onClose={close} id={id} />}
+      {openReservation && (
+        <Reservationbtn
+          onClose={close}
+          id={id}
+          night={location.state.datesLength}
+        />
+      )}
       {/* 點擊照片 */}
       {openSlider && (
         <div className="fixed w-full h-screen z-50 bg-black/80 flex justify-center items-center">
@@ -109,9 +116,9 @@ const Hotel = () => {
 
       <div className="container mx-auto max-w-screen-xl  py-20">
         <div className="flex gap-2">
-          {list.map((i) => {
+          {list.map((i, index) => {
             return (
-              <button className="bg-slate-300 p-4 rounded-xl" key={i}>
+              <button className="bg-slate-300 p-4 rounded-xl" key={index}>
                 {i}
               </button>
             );
@@ -205,7 +212,7 @@ const Hotel = () => {
             <h4 className="text-xl font-semibold">住宿特色</h4>
             <p>{data.distance}</p>
             <h4 className="text-2xl">
-              TWD {data.cheapestPrice?.toLocaleString()}
+              TWD {location.state.totalHotelsPrice?.toLocaleString()}
             </h4>
             <button
               className="w-full p-3 bg-slate-500 rounded-lg"
