@@ -4,6 +4,7 @@ import HotelsList from "./pages/HotelsList";
 import Hotel from "./pages/Hotel";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import Backstage from "./pages/Backstage";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App() {
@@ -16,6 +17,8 @@ function App() {
           <Route path="/hotel/:id" element={<Hotel />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+
+          <Route path="/backstage" element={<Backstage />} />
         </Routes>
       </BrowserRouter>
     </div>

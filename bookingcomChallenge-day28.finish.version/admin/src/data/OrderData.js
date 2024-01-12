@@ -4,6 +4,7 @@ import { ReservationDatesAndPrice } from "../datesCalculate";
 
 export const gridOrderhotelsImage = (props) => {
   const { data, loading, error } = useFetch(`/hotels/find/${props.hotelId}`);
+  console.log(props.hotelId);
   return (
     <div>
       {loading ? (
@@ -44,6 +45,7 @@ export const gridOrderReservationDates = (props) => (
 );
 export const gridOrderUserName = (props) => {
   const Url = `/users/${props.userId}`;
+  console.log(props.userId);
   const { data, loading, error } = useFetch(Url);
   return <div>{loading ? <>載入中</> : <div>{data.username}</div>}</div>;
 };
