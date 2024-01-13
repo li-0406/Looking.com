@@ -12,7 +12,7 @@ import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-const Reservationbtn = ({ onClose, id, night }) => {
+const Reservationbtn = ({ onClose, id, night, pic }) => {
   const navgate = useNavigate();
   const { data, loading, error } = useFetch(`/rooms/findHotel/${id}`);
 
@@ -26,10 +26,14 @@ const Reservationbtn = ({ onClose, id, night }) => {
   );
 
   const [roomNumber, setRoomNumber] = useState([]);
+  const [roomTitle, setRoomTitle] = useState([]);
   const [orderData, setOrderData] = useState({
     userId: user._id,
+    userName: user.username,
     hotelId: id,
     RoomNumberId: [],
+    RoomTitle: [],
+    RoomPic: pic,
     ReservationDates: [
       {
         startDate: date[0].startDate,
@@ -62,11 +66,11 @@ const Reservationbtn = ({ onClose, id, night }) => {
     }
   };
 
-  const handleCheckBox = (e, price) => {
+  const handleCheckBox = (e, room) => {
     //總額
     setOrderData((item) => {
       const factor = e.target.checked ? 1 : -1;
-      const newTotalPrice = item.totalPrice + factor * price * night;
+      const newTotalPrice = item.totalPrice + factor * room.price * night;
       return { ...item, totalPrice: newTotalPrice };
     });
 
@@ -75,6 +79,11 @@ const Reservationbtn = ({ onClose, id, night }) => {
         ? [...roomNumber, e.target.value]
         : roomNumber.filter((i) => i !== e.target.value)
     );
+    setRoomTitle(
+      e.target.checked
+        ? [...roomTitle, room.title]
+        : roomTitle.filter((i) => i !== room.title)
+    );
     setCreateOrderState(false);
   };
 
@@ -82,18 +91,25 @@ const Reservationbtn = ({ onClose, id, night }) => {
   const { order } = useCreateOrder("/order", orderData, createOrderState);
   const handleClick = () => {
     try {
-      setOrderData((item) => ({ ...item, RoomNumberId: roomNumber }));
-      console.log(orderData);
+      setOrderData((item) => ({
+        ...item,
+        RoomNumberId: roomNumber,
+        RoomTitle: roomTitle,
+      }));
       setCreateOrderState(true);
+    } catch (error) {
+      console.log("訂單或是住宿日期上傳失敗");
+    }
+  };
+  useEffect(() => {
+    if (order.status === 200) {
       updatedReservationDates();
       setOpen(true);
       setTimeout(() => {
         navgate("/");
       }, 2000);
-    } catch (error) {
-      console.log("訂單或是住宿日期上傳失敗");
     }
-  };
+  }, [order]);
 
   const isNotAvailableDate = (item) => {
     const res = item.unavailableDates.some((i) =>
@@ -160,7 +176,7 @@ const Reservationbtn = ({ onClose, id, night }) => {
                           <input
                             type="checkbox"
                             value={j._id}
-                            onChange={(e) => handleCheckBox(e, i.price)}
+                            onChange={(e) => handleCheckBox(e, i)}
                             disabled={isNotAvailableDate(j)}
                           />
                           <span

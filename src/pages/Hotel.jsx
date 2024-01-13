@@ -77,6 +77,7 @@ const Hotel = () => {
           onClose={close}
           id={id}
           night={location.state.datesLength}
+          pic={data.photos[0]}
         />
       )}
       {/* 點擊照片 */}

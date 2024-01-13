@@ -7,7 +7,7 @@ export const createOrder = async (req, res, next) => {
     const saveOrder = await newOrder.save();
     res.send(200, saveOrder);
   } catch (error) {
-    next(errorMessage(500, "建立訂單失敗，請確認格式"));
+    next(errorMessage(500, "建立訂單失敗，請確認格式", error));
   }
 };
 

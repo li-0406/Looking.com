@@ -105,7 +105,7 @@ const Header = () => {
         options: conditions,
       },
     });
-    navigate("/hotelsList", {
+    navigate("/hotelsLists", {
       // state: { destination, conditions, dates },
     });
   };

@@ -9,9 +9,9 @@ const Feature = () => {
   return (
     <div className="flex gap-4">
       {loading ? (
-        data.map((i) => (
-          <div className="cursor-pointer w-full">
-            <Skeleton key={i._id} />
+        data.map((i, index) => (
+          <div className="cursor-pointer w-full" key={index}>
+            <Skeleton />
           </div>
         ))
       ) : (

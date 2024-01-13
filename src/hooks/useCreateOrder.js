@@ -7,9 +7,12 @@ const useCreateOrder = (url, orderData, createOrderState) => {
   useEffect(() => {
     const createOrder = async () => {
       try {
+        console.log(orderData);
         const res = await axios.post(url, orderData);
         console.log(res);
+        setOrder(res);
       } catch (error) {
+        setOrder(error.response.data);
         console.log("上傳失敗");
       }
     };

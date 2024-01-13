@@ -1,5 +1,5 @@
 import React, { useState, dispatch, useContext } from "react";
-import Navbar from "../components/Navbar";
+import Navbar from "../components/Navbar.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronRight,
@@ -47,7 +47,6 @@ const HotelsList = () => {
   const [fetchDataUrl, setFetchDataUrl] = useState(searchUrl);
   const { data, loading, error } = useFetch(fetchDataUrl);
   data.forEach((i) => {
-    console.log(date[0]?.startDate, date[0]?.endDate, i.cheapestPrice);
     const { datesLength, totalHotelsPrice } = ReservationDatesAndPrice(
       date[0]?.startDate,
       date[0]?.endDate,

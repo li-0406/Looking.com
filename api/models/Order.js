@@ -1,16 +1,32 @@
 import mongoose from "mongoose";
+function arrayMinLength(value) {
+  return Array.isArray(value) && value.length >= 1;
+}
 const OrderSchema = new mongoose.Schema(
   {
     userId: { type: String, required: true }, //紀錄誰下這個訂單的
+    userName: { type: String, required: true },
     hotelId: { type: String, required: true }, //紀錄這個訂單的飯店編號
     //一次紀錄一個訂房的房間，但可以一次下訂許多的房間
-    RoomNumberId: [
-      {
-        //紀錄這個訂單的房間編號
-        type: String,
-        required: true,
-      },
-    ],
+    RoomNumberId: {
+      type: [
+        {
+          type: String,
+          required: true,
+        },
+      ],
+      validate: [arrayMinLength, "陣列不能為空"],
+    },
+    RoomTitle: {
+      type: [
+        {
+          type: String,
+          required: true,
+        },
+      ],
+      validate: [arrayMinLength, "陣列不能為空"],
+    },
+    RoomPic: { type: String, required: true },
     ReservationDates: [
       {
         startDate: { type: Date, required: true },
