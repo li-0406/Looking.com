@@ -3,14 +3,25 @@ import Sidebar from "../../components/backstage/Sidebar";
 import Navbar from "../../components/Navbar";
 import useFetch from "../../hooks/useFetch";
 import axios from "axios";
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import DeleteDialog from "../../components/backstage/DeleteDialog";
 const Backstage = () => {
   const [refresh, setRefresh] = useState(false);
   const { data, loading, error } = useFetch("/order", refresh);
 
-  const deleteOrder = async (id) => {
-    await axios.delete(`order/${id}`);
+  const [deleteTf, setDeleteTf] = useState(false);
+  const [deleteId, setDeleteId] = useState("");
+  const openDelete = async (id) => {
+    setDeleteTf(true);
+    setDeleteId(id);
+  };
+  const closeDelete = () => setDeleteTf(false);
+
+  const deleteOrder = async () => {
+    await axios.delete(`hotels/${deleteId}`);
     setRefresh(!refresh);
+    closeDelete();
   };
 
   return (
@@ -19,7 +30,7 @@ const Backstage = () => {
       <Sidebar />
       <div className="container mx-auto max-w-screen-xl pt-10">
         <h2 className="text-xl">管理列表</h2>
-        <h1 className="text-3xl my-3">訂單分頁</h1>
+        <h1 className="text-3xl mt-3 mb-10">訂單分頁</h1>
         <table className="w-full ">
           <thead>
             <tr>
@@ -52,14 +63,27 @@ const Backstage = () => {
                 </td>
                 <td>{i.userName}</td>
                 <td>{i.totalPrice}</td>
-                <td>{i.status}</td>
+                <td>
+                  <span
+                    className={
+                      i.status === "待確認訂單"
+                        ? "bg-red-500 rounded-full p-2"
+                        : ""
+                    }
+                  >
+                    {i.status}
+                  </span>
+                </td>
                 <td>{i._id}</td>
                 <td>
                   <span
-                    onClick={() => deleteOrder(i._id)}
+                    onClick={() => openDelete(i._id)}
                     className="cursor-pointer"
                   >
-                    刪除
+                    <FontAwesomeIcon
+                      icon={faTrashCan}
+                      className="text-2xl hover:text-red-500 ease-in-out duration-200"
+                    />
                   </span>
                 </td>
               </tr>
@@ -67,6 +91,12 @@ const Backstage = () => {
           </tbody>
         </table>
       </div>
+      <DeleteDialog
+        open={deleteTf}
+        handleClose={closeDelete}
+        id={deleteId}
+        deleteOrder={deleteOrder}
+      />
     </div>
   );
 };
