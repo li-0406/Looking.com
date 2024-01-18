@@ -6,22 +6,30 @@ import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import DeleteDialog from "../../components/backstage/DeleteDialog";
+import Toast from "../../components/Toast";
 const Backstage = () => {
   const [refresh, setRefresh] = useState(false);
   const { data, loading, error } = useFetch("/order", refresh);
 
   const [deleteTf, setDeleteTf] = useState(false);
   const [deleteId, setDeleteId] = useState("");
+  const [toastTf, setToastTf] = useState(false);
   const openDelete = async (id) => {
     setDeleteTf(true);
     setDeleteId(id);
   };
-  const closeDelete = () => setDeleteTf(false);
+  const closeDelete = () => {
+    setDeleteTf(false);
+    setToastTf(false);
+  };
 
   const deleteOrder = async () => {
-    await axios.delete(`hotels/${deleteId}`);
+    console.log(deleteId);
+    await axios.delete(`order/${deleteId}`);
     setRefresh(!refresh);
     closeDelete();
+    setToastTf(true);
+    console.log(data);
   };
 
   return (
@@ -96,6 +104,12 @@ const Backstage = () => {
         handleClose={closeDelete}
         id={deleteId}
         deleteOrder={deleteOrder}
+      />
+      <Toast
+        open={toastTf}
+        handleClose={closeDelete}
+        text={"刪除成功"}
+        state={"error"}
       />
     </div>
   );

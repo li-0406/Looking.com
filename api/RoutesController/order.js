@@ -44,6 +44,7 @@ export const updatedOrder = async (req, res, next) => {
 
 export const deleteOrder = async (req, res, next) => {
   const id = req.params.id;
+  console.log(id);
   try {
     await Order.findByIdAndDelete(id);
     res.status(200).json("刪除訂單資料成功");

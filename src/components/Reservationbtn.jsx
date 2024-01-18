@@ -8,8 +8,7 @@ import axios from "axios";
 import format from "date-fns/format";
 import useCreateOrder from "../hooks/useCreateOrder.js";
 import { ReservationDatesList } from "../datesCalcualate.js";
-import Snackbar from "@mui/material/Snackbar";
-import Alert from "@mui/material/Alert";
+import Toast from "./Toast.jsx";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 const Reservationbtn = ({ onClose, id, night, pic }) => {
@@ -206,16 +205,12 @@ const Reservationbtn = ({ onClose, id, night, pic }) => {
             </div>
           </div>
         </div>
-        <Snackbar
-          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        <Toast
           open={open}
-          autoHideDuration={2000}
-          onClose={handleClose}
-        >
-          <Alert variant="filled" onClose={handleClose} severity="success">
-            預定完成
-          </Alert>
-        </Snackbar>
+          handleClose={handleClose}
+          text={"預定完成"}
+          state={"success"}
+        />
       </motion.div>
       ;
     </div>

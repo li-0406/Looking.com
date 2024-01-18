@@ -98,7 +98,13 @@ const Backstage = () => {
           </tbody>
         </table>
       </div>
-      <EditHotel open={editTf} handleClose={closeDelete} data={editDetail} />
+      <EditHotel
+        open={editTf}
+        handleClose={closeDelete}
+        data={editDetail}
+        refresh={refresh}
+        setRefresh={setRefresh}
+      />
       <DeleteDialog
         open={deleteTf}
         handleClose={closeDelete}

@@ -1,33 +1,51 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-
-const DeleteDialog = ({ open, handleClose, data }) => {
-  console.log(data);
-  const [newData, setNewData] = useState({
-    name: data.name,
-    type: data.type,
-    city: data.city,
-    address: data.address,
-    distance: data.distance,
-    photos: data.photos?.[0],
-    title: data.title,
-    desc: data.desc,
-    rating: data.rating,
-    cheapestPrice: data.cheapestPrice,
-    popularHotel: data.popularHotel,
-    comments: data.comments,
-  });
+import { styled } from "@mui/material/styles";
+import axios from "axios";
+import Toast from "../Toast";
+const DeleteDialog = ({ open, handleClose, data, refresh, setRefresh }) => {
+  const [newData, setNewData] = useState(data);
+  const [toastTf, setToastTf] = useState(false);
+  useEffect(() => {
+    setNewData(data);
+  }, [data]);
   console.log(newData);
   const handleInputChange = (e) => {
     console.log(e.target.id);
     const name = e.target.id;
     setNewData({ ...newData, [name]: e.target.value });
   };
+
+  const send = async () => {
+    const res = await axios.put(`hotels/${newData._id}`, newData);
+    if (res.status === 200) {
+      setToastTf(true);
+      setTimeout(() => {
+        setToastTf(false);
+        handleClose();
+        setRefresh(!refresh);
+      }, 2000);
+    }
+    console.log(res);
+  };
+
+  const VisuallyHiddenInput = styled("input")({
+    clip: "rect(0 0 0 0)",
+    clipPath: "inset(50%)",
+    height: 1,
+    overflow: "hidden",
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    whiteSpace: "nowrap",
+    width: 1,
+  });
+
   return (
     <Dialog
       open={open}
@@ -96,7 +114,7 @@ const DeleteDialog = ({ open, handleClose, data }) => {
               id="popularHotel"
               className="text-xl bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
               onChange={handleInputChange}
-              defaultValue={newData.popularHotel}
+              defaultValue={newData.popularHotel ? "true" : "false"}
             >
               <option value="true">是</option>
               <option value="false">否</option>
@@ -131,13 +149,33 @@ const DeleteDialog = ({ open, handleClose, data }) => {
               value={newData.distance}
               onChange={handleInputChange}
             />
+            <div className="grid grid-cols-4 gap-4">
+              {newData.photos.map((i) => (
+                <div>
+                  <input
+                    className="w-full rounded-t-lg"
+                    type="text"
+                    value={i}
+                  />
+                  <img className="rounded-b-lg" src={i} alt="" />
+                </div>
+              ))}
+            </div>
           </DialogContentText>
         </div>
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>取消</Button>
-        <Button autoFocus>送出</Button>
+        <Button autoFocus onClick={send}>
+          送出
+        </Button>
       </DialogActions>
+      <Toast
+        open={toastTf}
+        handleClose={handleClose}
+        text={"修改成功"}
+        state={"info"}
+      />
     </Dialog>
   );
 };
