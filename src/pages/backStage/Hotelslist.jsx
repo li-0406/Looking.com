@@ -4,7 +4,11 @@ import Navbar from "../../components/Navbar";
 import useFetch from "../../hooks/useFetch";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrashCan, faPenToSquare } from "@fortawesome/free-solid-svg-icons";
+import {
+  faTrashCan,
+  faPenToSquare,
+  faImage,
+} from "@fortawesome/free-solid-svg-icons";
 import DeleteDialog from "../../components/backstage/DeleteDialog";
 import EditHotel from "../../components/backstage/EditHotel";
 const Backstage = () => {
@@ -59,7 +63,13 @@ const Backstage = () => {
               <tr key={i._id}>
                 <td>{i.name}</td>
                 <td className="w-[20%] p-3">
-                  <img src={i.photos[0]} alt="" className="rounded-md" />
+                  {i.photos[0] ? (
+                    <img src={i.photos[0]} alt="" className="rounded-md" />
+                  ) : (
+                    <div className="bg-slate-300 w-full h-full py-16 rounded-lg">
+                      <FontAwesomeIcon icon={faImage} className="text-3xl" />
+                    </div>
+                  )}
                 </td>
 
                 <td>{i.type}</td>

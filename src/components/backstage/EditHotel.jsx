@@ -5,20 +5,41 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import { styled } from "@mui/material/styles";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import Toast from "../Toast";
 const DeleteDialog = ({ open, handleClose, data, refresh, setRefresh }) => {
   const [newData, setNewData] = useState(data);
   const [toastTf, setToastTf] = useState(false);
+  const [inputValue, setInputValue] = useState("");
   useEffect(() => {
     setNewData(data);
   }, [data]);
-  console.log(newData);
   const handleInputChange = (e) => {
-    console.log(e.target.id);
-    const name = e.target.id;
-    setNewData({ ...newData, [name]: e.target.value });
+    const name = e?.target?.id || e;
+
+    setNewData((prevData) => {
+      if (name === "photos" && inputValue) {
+        const updatedPhotos = [...prevData.photos, inputValue];
+        setInputValue("");
+        return {
+          ...prevData,
+          [name]: updatedPhotos,
+        };
+      } else {
+        return { ...prevData, [name]: e.target.value };
+      }
+    });
+  };
+
+  const deleteUrl = (url) => {
+    setNewData((prevData) => {
+      return {
+        ...prevData,
+        photos: prevData.photos.filter((i, index) => i !== url || index !== 0),
+      };
+    });
   };
 
   const send = async () => {
@@ -34,17 +55,10 @@ const DeleteDialog = ({ open, handleClose, data, refresh, setRefresh }) => {
     console.log(res);
   };
 
-  const VisuallyHiddenInput = styled("input")({
-    clip: "rect(0 0 0 0)",
-    clipPath: "inset(50%)",
-    height: 1,
-    overflow: "hidden",
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    whiteSpace: "nowrap",
-    width: 1,
-  });
+  const close = () => {
+    handleClose();
+    setNewData(data);
+  };
 
   return (
     <Dialog
@@ -149,23 +163,48 @@ const DeleteDialog = ({ open, handleClose, data, refresh, setRefresh }) => {
               value={newData.distance}
               onChange={handleInputChange}
             />
-            <div className="grid grid-cols-4 gap-4">
-              {newData.photos.map((i) => (
-                <div>
-                  <input
-                    className="w-full rounded-t-lg"
-                    type="text"
-                    value={i}
-                  />
-                  <img className="rounded-b-lg" src={i} alt="" />
-                </div>
-              ))}
+            <label htmlFor="distance" className="block text-md font-medium ">
+              新增照片
+            </label>
+            <div className="flex gap-3">
+              <input
+                type="text"
+                id="photos"
+                className="bg-gray-50 border  text-xl border-gray-300 rounded-lg  block w-2/3 p-3"
+                placeholder="請輸入照片URL"
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+              />
+              <button
+                className="border px-6 rounded-xl"
+                onClick={() => handleInputChange("photos")}
+              >
+                新增
+              </button>
             </div>
+            {newData.photos?.length ? (
+              <div className="grid grid-cols-4 gap-4 mt-3 select-none">
+                {newData.photos.map((i, index) => (
+                  <div className="relative">
+                    <img className="rounded-lg" src={i} alt="" />
+                    <div className="w-full h-full absolute top-1  items-center justify-center flex opacity-0 hover:opacity-80 ease-in-out duration-200 cursor-pointer">
+                      <FontAwesomeIcon
+                        icon={faCircleXmark}
+                        className="text-5xl"
+                        onClick={() => deleteUrl(i, index)}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-center mt-10 text-2xl text-gray-400">無照片</p>
+            )}
           </DialogContentText>
         </div>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose}>取消</Button>
+        <Button onClick={close}>取消</Button>
         <Button autoFocus onClick={send}>
           送出
         </Button>
