@@ -9,20 +9,32 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import Toast from "../Toast";
-const DeleteDialog = ({ open, handleClose, data, refresh, setRefresh }) => {
+const DeleteDialog = ({
+  open,
+  handleClose,
+  data = {},
+  refresh,
+  setRefresh,
+}) => {
   const [newData, setNewData] = useState(data);
   const [toastTf, setToastTf] = useState(false);
+  const [addTf, setAddTf] = useState(false);
   const [inputValue, setInputValue] = useState("");
   useEffect(() => {
     setNewData(data);
   }, [data]);
   const handleInputChange = (e) => {
     const name = e?.target?.id || e;
-
+    if (name === "photos" && !inputValue) return;
     setNewData((prevData) => {
       if (name === "photos" && inputValue) {
-        const updatedPhotos = [...prevData.photos, inputValue];
+        console.log(prevData?.photos);
+        const updatedPhotos = prevData.photos
+          ? [...prevData?.photos, inputValue]
+          : [inputValue];
+
         setInputValue("");
+        console.log(newData);
         return {
           ...prevData,
           [name]: updatedPhotos,
@@ -37,23 +49,52 @@ const DeleteDialog = ({ open, handleClose, data, refresh, setRefresh }) => {
     setNewData((prevData) => {
       return {
         ...prevData,
-        photos: prevData.photos.filter((i, index) => i !== url || index !== 0),
+        photos: prevData.photos.filter((i, index) => i !== url),
       };
     });
   };
 
   const send = async () => {
-    const res = await axios.put(`hotels/${newData._id}`, newData);
-    if (res.status === 200) {
-      setToastTf(true);
-      setTimeout(() => {
-        setToastTf(false);
-        handleClose();
-        setRefresh(!refresh);
-      }, 2000);
+    if (data._id) {
+      const res = await axios.put(`hotels/${newData._id}`, newData);
+      if (res.status === 200) {
+        setToastTf(true);
+        setTimeout(() => {
+          setToastTf(false);
+          handleClose();
+          setRefresh(!refresh);
+        }, 2000);
+      }
+      console.log(res);
+    } else {
+      setNewData({
+        ...newData,
+        type: newData.type || "飯店",
+        popularHotel: newData.popularHotel || false,
+        cheapestPrice: 7903,
+        comments: 463,
+      });
+      setAddTf(!addTf);
     }
-    console.log(res);
   };
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await axios.post("/hotels", newData);
+        if (res.status === 200) {
+          setToastTf(true);
+          setTimeout(() => {
+            setToastTf(false);
+            handleClose();
+            setRefresh(!refresh);
+          }, 2000);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchData();
+  }, [addTf]);
 
   const close = () => {
     handleClose();
@@ -74,6 +115,16 @@ const DeleteDialog = ({ open, handleClose, data, refresh, setRefresh }) => {
         <div className="p-4">
           <DialogContentText id="alert-dialog-description">
             <label htmlFor="name" className="block text-md font-medium ">
+              標題
+            </label>
+            <input
+              type="text"
+              id="title"
+              className="bg-gray-50 border text-xl border-gray-300 rounded-lg  block w-full p-3 mb-2"
+              value={newData.title}
+              onChange={handleInputChange}
+            />
+            <label htmlFor="name" className="block text-md font-medium ">
               飯店名稱
             </label>
             <input
@@ -87,10 +138,10 @@ const DeleteDialog = ({ open, handleClose, data, refresh, setRefresh }) => {
               飯店種類
             </label>
             <select
-              id="popularHotel"
+              id="type"
               className="text-xl bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
               onChange={handleInputChange}
-              defaultValue={newData.popularHotel}
+              defaultValue={data._id ? newData.type : "飯店"}
             >
               <option value="飯店">飯店</option>
               <option value="公寓">公寓</option>
@@ -206,14 +257,14 @@ const DeleteDialog = ({ open, handleClose, data, refresh, setRefresh }) => {
       <DialogActions>
         <Button onClick={close}>取消</Button>
         <Button autoFocus onClick={send}>
-          送出
+          {data._id ? "送出" : "創建"}
         </Button>
       </DialogActions>
       <Toast
         open={toastTf}
         handleClose={handleClose}
-        text={"修改成功"}
-        state={"info"}
+        text={data._id ? "修改成功" : "新增完成"}
+        state={data._id ? "info" : "success"}
       />
     </Dialog>
   );

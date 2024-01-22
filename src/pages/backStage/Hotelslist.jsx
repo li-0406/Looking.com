@@ -26,7 +26,7 @@ const Backstage = () => {
     setEditTf(false);
   };
   const deleteOrder = async () => {
-    await axios.delete(`order/${id}`);
+    await axios.delete(`/hotels/${id}`);
     setRefresh(!refresh);
     closeDelete();
   };
@@ -44,8 +44,19 @@ const Backstage = () => {
       <Navbar />
       <Sidebar />
       <div className="container mx-auto max-w-screen-xl pt-10">
-        <h2 className="text-xl">管理列表</h2>
-        <h1 className="text-3xl mt-3 mb-10">飯店分頁</h1>
+        <div className="flex justify-between items-center">
+          <div>
+            <h2 className="text-xl">管理列表</h2>
+            <h1 className="text-3xl mt-3 mb-10">飯店分頁</h1>
+          </div>
+          <button
+            className="border border-orange-500 p-3 bg-orange-500 rounded-lg hover:bg-transparent ease-in-out duration-200"
+            onClick={() => openEdit({})}
+          >
+            新增飯店
+          </button>
+        </div>
+
         <table className="w-full ">
           <thead>
             <tr>
