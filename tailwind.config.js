@@ -15,6 +15,12 @@ module.exports = {
         footer:
           "url('https://cf.bstatic.com/psb/capla/static/media/world-map.7d457a5d.png')",
       },
+      colors: {
+        "blue-1": "#27374D",
+        "blue-2": "#526D82",
+        "blue-3": "#9DB2BF",
+        "blue-4": "#DDE6ED",
+      },
     },
 
     fontSize: {

@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBed,
@@ -110,6 +110,35 @@ const Header = () => {
     });
   };
 
+  const calendarRef = useRef(null);
+  const calendarRange = useRef(null);
+  const peopleRef = useRef(null);
+  const peopleRange = useRef(null);
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        calendarRef.current &&
+        !calendarRef.current.contains(event.target) &&
+        calendarRange.current &&
+        !calendarRange.current.contains(event.target)
+      ) {
+        setOpenCalendar(false);
+      }
+      if (
+        peopleRef.current &&
+        !peopleRef.current.contains(event.target) &&
+        peopleRange.current &&
+        !peopleRange.current.contains(event.target)
+      ) {
+        setopenPeople(false);
+      }
+    };
+    document.addEventListener("click", handleClickOutside);
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, [calendarRef, peopleRef, calendarRange, peopleRange]);
+
   return (
     <div className="bg-slate-700 pb-20 relative">
       <div className="container mx-auto max-w-screen-xl pt-20">
@@ -121,13 +150,14 @@ const Header = () => {
           <div className="bg-gray-800  rounded-md pl-4 flex-1 flex items-center">
             <FontAwesomeIcon icon={faBed} className=" text-gray-400" />
             <Select
-              defaultValue={destination}
+              defaultValue={areaList.find((i) => i.value === "台北")}
               className="w-full px-3"
               options={areaList}
               styles={selectStyle}
               onChange={setDestination}
             />
           </div>
+          {destination}
           <div className="bg-gray-800 rounded-md pl-4 flex-1 relative flex items-center">
             <FontAwesomeIcon icon={faCalendar} className=" text-gray-400" />
             <input
@@ -139,6 +169,7 @@ const Header = () => {
                 "yyyy / MM月 / dd日"
               )} - ${format(dates[0].endDate, "yyyy / MM月 / dd日")}`}
               onClick={() => setOpenCalendar(!openCalendar)}
+              ref={calendarRef}
             />
             {openCalendar && (
               <DateRange
@@ -149,6 +180,7 @@ const Header = () => {
                 ranges={dates}
                 locale={locales["zhTW"]}
                 onChange={(item) => setdates([item.selection])}
+                ref={calendarRange}
               />
             )}
           </div>
@@ -160,6 +192,7 @@ const Header = () => {
               className="bg-gray-800 focus:outline-0 rounded p-3 cursor-pointer w-full"
               v-model="input"
               placeholder={`${conditions.adult} 位成人 · ${conditions.children} 位小孩 · ${conditions.room} 間房`}
+              ref={peopleRef}
             />
             {openPeople && (
               <div className="bg-white shadow-md rounded-lg p-8 absolute top-15 right-20 w-[400px]">
@@ -167,6 +200,7 @@ const Header = () => {
                   <div
                     className=" flex items-center justify-between"
                     key={i.name}
+                    ref={peopleRange}
                   >
                     <span>{i.name}</span>
                     <div

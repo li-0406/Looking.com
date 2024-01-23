@@ -12,10 +12,8 @@ const Footer = () => {
               alt=""
             />
             <div>
-              <h4 className="text-gray-300 font-semibold text-2xl mb-1">
-                優惠立即享
-              </h4>
-              <span className="text-gray-300  text-md">
+              <h4 className=" font-semibold text-2xl mb-1">優惠立即享</h4>
+              <span className="text-md">
                 登入您的 Looking.com 帳戶，尋找藍色的 Genius 圖標，輕鬆省一筆
               </span>
               <div className="mt-10">

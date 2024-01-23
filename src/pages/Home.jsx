@@ -123,12 +123,8 @@ const Home = () => {
       <Navbar />
       <Header />
       <div className="container mx-auto max-w-screen-xl pt-10">
-        <h4 className="text-gray-300 font-semibold text-2xl mb-1 mt-15">
-          特別優惠
-        </h4>
-        <span className="text-gray-400 mb-4 block">
-          為您提供的促銷、折扣與特別優惠
-        </span>
+        <h4 className=" font-semibold text-2xl mb-1 mt-15">特別優惠</h4>
+        <span className=" mb-4 block">為您提供的促銷、折扣與特別優惠</span>
         <div className="bg-banner bg-no-repeat bg-cover bg-center p-16 rounded-lg">
           <p className="text-gray-100 text-2xl font-semibold">
             把握年末優惠省 15%
@@ -140,26 +136,18 @@ const Home = () => {
             搜尋年末優惠
           </button>
         </div>
-        <h4 className="text-gray-300 font-semibold text-2xl mb-4 mt-16">
-          依住宿類型瀏覽
-        </h4>
+        <h4 className=" font-semibold text-2xl mb-4 mt-16">依住宿類型瀏覽</h4>
         <Feature dataArray={type} />
-        <h4 className="text-gray-300 font-semibold text-2xl mb-1 mt-15">
-          探索臺灣
-        </h4>
-        <span className="text-gray-400 mb-4 block">
+        <h4 className=" font-semibold text-2xl mb-1 mt-15">探索臺灣</h4>
+        <span className=" mb-4 block">
           這些熱門目的地魅力無窮，等你來體驗！
         </span>
         <Feature dataArray={taiwan} url={citiesUrl} />
-        <h4 className="text-gray-300 font-semibold text-2xl mb-1 mt-15">
-          新潮目的地
-        </h4>
-        <span className="text-gray-400 mb-4 block">
-          來自臺灣的旅客的最熱門選擇
-        </span>
+        <h4 className=" font-semibold text-2xl mb-1 mt-15">新潮目的地</h4>
+        <span className=" mb-4 block">來自臺灣的旅客的最熱門選擇</span>
         <PostCard item={card.slice(0, 2)} />
         <PostCard item={card.slice(2, 5)} />
-        <h4 className="text-gray-300 font-semibold text-2xl mb-4 mt-15">
+        <h4 className=" font-semibold text-2xl mb-4 mt-15">
           人氣民宿、公寓類型住宿
         </h4>
         <Popular />
