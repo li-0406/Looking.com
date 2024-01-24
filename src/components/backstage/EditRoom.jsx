@@ -6,7 +6,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import Select from "react-select";
 import axios from "axios";
 import Toast from "../Toast";
@@ -15,58 +15,24 @@ const DeleteDialog = ({ open, handleClose, data, refresh, setRefresh }) => {
   const [toastTf, setToastTf] = useState(false);
   const [addTf, setAddTf] = useState(false);
   const [inputValue, setInputValue] = useState("");
-  const [destination, setDestination] = useState(""); //地區
 
-  const areaList = [
-    { value: "台北", label: "台北" },
-    { value: "台中", label: "台中" },
-    { value: "蘇澳鎮", label: "蘇澳鎮" },
-    { value: "台南", label: "台南" },
-    { value: "高雄", label: "高雄" },
-    { value: "礁溪鄉", label: "礁溪鄉" },
-  ];
-
-  const selectStyle = {
-    control: (baseStyles, state) => ({
-      ...baseStyles,
-      backgroundColor: "bg-gray-800",
-      borderColor: "gray",
-    }),
-    singleValue: (baseStyles, state) => ({
-      ...baseStyles,
-      color: "white", // 字體顏色
-    }),
-    option: (baseStyles, state) => ({
-      ...baseStyles,
-      backgroundColor: state.isSelected ? "lightblue" : "white",
-      ":hover": {
-        backgroundColor: "lightblue",
-      },
-    }),
-    input: (baseStyles) => ({
-      ...baseStyles,
-      color: "gray", // 文字顏色
-    }),
-  };
   useEffect(() => {
     setNewData(data);
   }, [data]);
-  console.log(data);
+
   const handleInputChange = (e) => {
+    console.log(e);
     const name = e?.target?.id || e;
-    if (name === "photos" && !inputValue) return;
+    if (name === "roomNumbers" && !inputValue) return;
+
     setNewData((prevData) => {
-      if (name === "photos" && inputValue) {
-        console.log(prevData?.photos);
-        const updatedPhotos = prevData.photos
-          ? [...prevData?.photos, inputValue]
-          : [inputValue];
+      if (name === "roomNumbers" && inputValue) {
+        console.log(prevData.roomNumbers);
 
         setInputValue("");
-        console.log(newData);
         return {
           ...prevData,
-          [name]: updatedPhotos,
+          [name]: [...prevData[name], { number: inputValue }],
         };
       } else {
         return { ...prevData, [name]: e.target.value };
@@ -74,28 +40,9 @@ const DeleteDialog = ({ open, handleClose, data, refresh, setRefresh }) => {
     });
   };
 
-  const changeArea = (e) => {
-    setDestination(e.value);
-    setNewData((prevData) => {
-      return {
-        ...prevData,
-        city: e.value,
-      };
-    });
-  };
-
-  const deleteUrl = (url) => {
-    setNewData((prevData) => {
-      return {
-        ...prevData,
-        photos: prevData.photos.filter((i, index) => i !== url),
-      };
-    });
-  };
-
   const send = async () => {
     if (data._id) {
-      const res = await axios.put(`hotels/${newData._id}`, newData);
+      const res = await axios.put(`/rooms/${newData._id}`, newData);
       if (res.status === 200) {
         setToastTf(true);
         setTimeout(() => {
@@ -138,6 +85,18 @@ const DeleteDialog = ({ open, handleClose, data, refresh, setRefresh }) => {
   const close = () => {
     handleClose();
     setNewData(data);
+  };
+
+  const deleteRoom = (item) => {
+    console.log(item);
+    setNewData((prevData) => {
+      return {
+        ...prevData,
+        roomNumbers: prevData.roomNumbers.filter(
+          (i) => i.number !== item.number
+        ),
+      };
+    });
   };
 
   return (
@@ -194,6 +153,39 @@ const DeleteDialog = ({ open, handleClose, data, refresh, setRefresh }) => {
               value={newData.maxPeople}
               onChange={handleInputChange}
             />
+            <label htmlFor="roomNumbers" className="block text-md font-medium ">
+              房間編號
+            </label>
+            <div className="flex gap-3 mb-2">
+              <input
+                type="number"
+                id="roomNumbers"
+                className="bg-gray-50 border text-xl border-gray-300 rounded-lg  block w-2/3 p-3 "
+                placeholder="請輸入房間編號"
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+              />
+              <button
+                className="border px-6 rounded-xl"
+                onClick={() => handleInputChange("roomNumbers")}
+              >
+                加入
+              </button>
+            </div>
+
+            <div className="border border-b-slate-700 p-6 rounded-lg">
+              {newData.roomNumbers?.map((i) => (
+                <span className="border border-gray-300 px-5 py-2 mr-3 rounded-full text-xl">
+                  <FontAwesomeIcon
+                    className="mr-2 cursor-pointer"
+                    icon={faXmark}
+                    onClick={() => deleteRoom(i)}
+                  />
+                  {i.number}
+                </span>
+              ))}
+            </div>
+
             {/* <Select
               defaultValue={areaList.find((i) => i.value === data.city)}
               className="w-full"

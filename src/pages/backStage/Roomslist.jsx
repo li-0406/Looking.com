@@ -9,6 +9,7 @@ import EditRoom from "../../components/backstage/EditRoom";
 const Backstage = () => {
   const [rooms, setRooms] = useState([]);
   const [hotel, setHotel] = useState({});
+  const [refresh, setRefresh] = useState(false);
   const location = useLocation();
   const id = location.pathname.split("/")[2];
   useEffect(() => {
@@ -23,7 +24,7 @@ const Backstage = () => {
       }
     };
     fetchData();
-  }, []);
+  }, [refresh]);
 
   const [editTf, setEditTf] = useState(false);
   const [editDetail, setEditDetail] = useState({});
@@ -93,7 +94,13 @@ const Backstage = () => {
           </tbody>
         </table>
       </div>
-      <EditRoom open={editTf} handleClose={handleClose} data={editDetail} />
+      <EditRoom
+        open={editTf}
+        handleClose={handleClose}
+        data={editDetail}
+        refresh={refresh}
+        setRefresh={setRefresh}
+      />
     </div>
   );
 };
