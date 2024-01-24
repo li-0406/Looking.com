@@ -23,7 +23,7 @@ function App() {
           {/* 後台 */}
           <Route path="/orderslist" element={<Orderslist />} />
           <Route path="/hotelslist" element={<Hotelslist />} />
-          <Route path="/roomslist" element={<Roomslist />} />
+          <Route path="/roomslist/:id" element={<Roomslist />} />
           <Route path="/userslist" element={<Userslist />} />
         </Routes>
       </BrowserRouter>

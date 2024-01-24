@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Sidebar from "../../components/backstage/Sidebar";
 import Navbar from "../../components/Navbar";
 import useFetch from "../../hooks/useFetch";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -11,12 +12,13 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import DeleteDialog from "../../components/backstage/DeleteDialog";
 import EditHotel from "../../components/backstage/EditHotel";
+import RoomDialog from "../../components/backstage/RoomDialog";
 const Backstage = () => {
   const [refresh, setRefresh] = useState(false);
   const { data, loading, error } = useFetch("/hotels", refresh);
-  console.log(data);
-  const [deleteTf, setDeleteTf] = useState(false);
   const [id, setId] = useState("");
+
+  const [deleteTf, setDeleteTf] = useState(false);
   const openDelete = async (id) => {
     setId(id);
     setDeleteTf(true);
@@ -39,11 +41,17 @@ const Backstage = () => {
     setEditTf(true);
   };
 
+  const [roomTf, setRoomTf] = useState(false);
+  const openRoom = (i) => {
+    setId(i._id);
+    setRoomTf(true);
+  };
+
   return (
     <div>
       <Navbar />
       <Sidebar />
-      <div className="container mx-auto max-w-screen-xl pt-10">
+      <div className="container mx-auto max-w-screen-2xl pt-10">
         <div className="flex justify-between items-center">
           <div>
             <h2 className="text-xl">管理列表</h2>
@@ -96,7 +104,17 @@ const Backstage = () => {
                   </span>
                 </td>
                 <td>{i._id}</td>
-                <td className="p-10">
+                <td>
+                  <Link to={`/roomslist/${i._id}`}>
+                    <button
+                      className="border border-blue-500 p-3 bg-blue-500 rounded-lg hover:bg-transparent ease-in-out duration-200"
+                      onClick={() => openRoom(i)}
+                    >
+                      查看房型
+                    </button>
+                  </Link>
+                </td>
+                <td className="p-5">
                   <FontAwesomeIcon
                     className="text-2xl hover:text-blue-600 ease-in-out duration-200 cursor-pointer"
                     icon={faPenToSquare}
@@ -132,6 +150,7 @@ const Backstage = () => {
         id={id}
         deleteOrder={deleteOrder}
       />
+      <RoomDialog open={roomTf} handleClose={closeDelete} id={id} />
     </div>
   );
 };

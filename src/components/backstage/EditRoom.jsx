@@ -51,6 +51,7 @@ const DeleteDialog = ({ open, handleClose, data, refresh, setRefresh }) => {
   useEffect(() => {
     setNewData(data);
   }, [data]);
+  console.log(data);
   const handleInputChange = (e) => {
     const name = e?.target?.id || e;
     if (name === "photos" && !inputValue) return;
@@ -162,133 +163,44 @@ const DeleteDialog = ({ open, handleClose, data, refresh, setRefresh }) => {
               value={newData.title}
               onChange={handleInputChange}
             />
-            <label htmlFor="name" className="block text-md font-medium ">
-              飯店名稱
+            <label htmlFor="desc" className="block text-md font-medium ">
+              規格
             </label>
             <input
               type="text"
-              id="name"
+              id="desc"
               className="bg-gray-50 border text-xl border-gray-300 rounded-lg  block w-full p-3 mb-2"
-              value={newData.name}
+              value={newData.desc}
               onChange={handleInputChange}
             />
-            <label htmlFor="type" className="block text-md font-medium ">
-              飯店種類
+            <label htmlFor="price" className="block text-md font-medium ">
+              價錢
             </label>
-            <select
-              id="type"
-              className="text-xl bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
+            <input
+              type="number"
+              id="price"
+              className="bg-gray-50 border text-xl border-gray-300 rounded-lg  block w-full p-3 mb-2"
+              value={newData.price}
               onChange={handleInputChange}
-              defaultValue={data._id ? newData.type : "飯店"}
-            >
-              <option value="飯店">飯店</option>
-              <option value="公寓">公寓</option>
-              <option value="渡假村">渡假村</option>
-              <option value="Villa">Villa</option>
-            </select>
+            />
 
-            <label htmlFor="city" className="block text-md font-medium ">
-              城市
+            <label htmlFor="maxPeople" className="block text-md font-medium ">
+              適合人數
             </label>
-            <Select
+            <input
+              type="number"
+              id="price"
+              className="bg-gray-50 border text-xl border-gray-300 rounded-lg  block w-full p-3 mb-2"
+              value={newData.maxPeople}
+              onChange={handleInputChange}
+            />
+            {/* <Select
               defaultValue={areaList.find((i) => i.value === data.city)}
               className="w-full"
               options={areaList}
               styles={selectStyle}
               onChange={changeArea}
-            />
-            <label htmlFor="address" className="block text-md font-medium ">
-              地址
-            </label>
-            <input
-              type="text"
-              id="address"
-              className="bg-gray-50 border  text-xl border-gray-300 rounded-lg  block w-full p-3 mb-2"
-              value={newData.address}
-              onChange={handleInputChange}
-            />
-            <label
-              htmlFor="popularHotel"
-              className="block text-md font-medium "
-            >
-              是否熱門
-            </label>
-            <select
-              id="popularHotel"
-              className="text-xl bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
-              onChange={handleInputChange}
-              defaultValue={newData.popularHotel ? "true" : "false"}
-            >
-              <option value="true">是</option>
-              <option value="false">否</option>
-            </select>
-            <label htmlFor="rating" className="block text-md font-medium ">
-              評分
-            </label>
-            <input
-              type="number"
-              id="rating"
-              className="bg-gray-50 border  text-xl border-gray-300 rounded-lg  block w-full p-3 mb-2"
-              value={newData.rating}
-              onChange={handleInputChange}
-            />
-            <label htmlFor="desc" className="block text-md font-medium ">
-              簡介
-            </label>
-            <textarea
-              type="text"
-              id="desc"
-              className="bg-gray-50 border  text-xl border-gray-300 rounded-lg  block w-full p-3 mb-2"
-              value={newData.desc}
-              onChange={handleInputChange}
-            />
-            <label htmlFor="distance" className="block text-md font-medium ">
-              標語
-            </label>
-            <input
-              type="text"
-              id="distance"
-              className="bg-gray-50 border  text-xl border-gray-300 rounded-lg  block w-full p-3 mb-2"
-              value={newData.distance}
-              onChange={handleInputChange}
-            />
-            <label htmlFor="distance" className="block text-md font-medium ">
-              新增照片
-            </label>
-            <div className="flex gap-3">
-              <input
-                type="text"
-                id="photos"
-                className="bg-gray-50 border  text-xl border-gray-300 rounded-lg  block w-2/3 p-3"
-                placeholder="請輸入照片URL"
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-              />
-              <button
-                className="border px-6 rounded-xl"
-                onClick={() => handleInputChange("photos")}
-              >
-                新增
-              </button>
-            </div>
-            {newData.photos?.length ? (
-              <div className="grid grid-cols-4 gap-4 mt-3 select-none">
-                {newData.photos.map((i, index) => (
-                  <div className="relative">
-                    <img className="rounded-lg" src={i} alt="" />
-                    <div className="w-full h-full absolute top-1  items-center justify-center flex opacity-0 hover:opacity-80 ease-in-out duration-200 cursor-pointer">
-                      <FontAwesomeIcon
-                        icon={faCircleXmark}
-                        className="text-5xl"
-                        onClick={() => deleteUrl(i, index)}
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p className="text-center mt-10 text-2xl text-gray-400">無照片</p>
-            )}
+            /> */}
           </DialogContentText>
         </div>
       </DialogContent>
