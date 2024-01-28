@@ -10,9 +10,16 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import Select from "react-select";
 import axios from "axios";
 import Toast from "../Toast";
-const DeleteDialog = ({ open, handleClose, data, refresh, setRefresh }) => {
+const DeleteDialog = ({
+  open,
+  handleClose,
+  data,
+  refresh,
+  setRefresh,
+  id,
+  toast,
+}) => {
   const [newData, setNewData] = useState(data);
-  const [toastTf, setToastTf] = useState(false);
   const [addTf, setAddTf] = useState(false);
   const [inputValue, setInputValue] = useState("");
 
@@ -44,36 +51,22 @@ const DeleteDialog = ({ open, handleClose, data, refresh, setRefresh }) => {
     if (data._id) {
       const res = await axios.put(`/rooms/${newData._id}`, newData);
       if (res.status === 200) {
-        setToastTf(true);
-        setTimeout(() => {
-          setToastTf(false);
-          handleClose();
-          setRefresh(!refresh);
-        }, 2000);
+        handleClose();
+        toast("修改成功");
       }
       console.log(res);
     } else {
-      setNewData({
-        ...newData,
-        type: newData.type,
-        popularHotel: newData.popularHotel,
-        cheapestPrice: 7903,
-        comments: 463,
-      });
       setAddTf(!addTf);
     }
   };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.post("/hotels", newData);
+        const res = await axios.post(`/rooms/${id}`, newData);
         if (res.status === 200) {
-          setToastTf(true);
-          setTimeout(() => {
-            setToastTf(false);
-            handleClose();
-            setRefresh(!refresh);
-          }, 2000);
+          handleClose();
+          toast("新增完成");
         }
       } catch (error) {
         console.error(error);
@@ -108,7 +101,9 @@ const DeleteDialog = ({ open, handleClose, data, refresh, setRefresh }) => {
       fullWidth
       maxWidth="lg"
     >
-      <DialogTitle id="alert-dialog-title">{"編輯"}</DialogTitle>
+      <DialogTitle id="alert-dialog-title">
+        {newData.title ? "編輯" : "新增"}
+      </DialogTitle>
       <DialogContent>
         <div className="p-4">
           <DialogContentText id="alert-dialog-description">
@@ -148,7 +143,7 @@ const DeleteDialog = ({ open, handleClose, data, refresh, setRefresh }) => {
             </label>
             <input
               type="number"
-              id="price"
+              id="maxPeople"
               className="bg-gray-50 border text-xl border-gray-300 rounded-lg  block w-full p-3 mb-2"
               value={newData.maxPeople}
               onChange={handleInputChange}
@@ -185,14 +180,6 @@ const DeleteDialog = ({ open, handleClose, data, refresh, setRefresh }) => {
                 </span>
               ))}
             </div>
-
-            {/* <Select
-              defaultValue={areaList.find((i) => i.value === data.city)}
-              className="w-full"
-              options={areaList}
-              styles={selectStyle}
-              onChange={changeArea}
-            /> */}
           </DialogContentText>
         </div>
       </DialogContent>
@@ -202,12 +189,6 @@ const DeleteDialog = ({ open, handleClose, data, refresh, setRefresh }) => {
           {data._id ? "送出" : "創建"}
         </Button>
       </DialogActions>
-      <Toast
-        open={toastTf}
-        handleClose={handleClose}
-        text={data._id ? "修改成功" : "新增完成"}
-        state={data._id ? "info" : "success"}
-      />
     </Dialog>
   );
 };

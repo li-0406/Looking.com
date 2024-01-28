@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Sidebar from "../../components/backstage/Sidebar";
 import Navbar from "../../components/Navbar";
 import useFetch from "../../hooks/useFetch";
@@ -13,11 +13,13 @@ import {
 import DeleteDialog from "../../components/backstage/DeleteDialog";
 import EditHotel from "../../components/backstage/EditHotel";
 import RoomDialog from "../../components/backstage/RoomDialog";
+import Toast from "../../components/Toast";
 const Backstage = () => {
   const [refresh, setRefresh] = useState(false);
   const { data, loading, error } = useFetch("/hotels", refresh);
   const [id, setId] = useState("");
-
+  const [toastTf, setToastTf] = useState(false);
+  const [toastText, setToastText] = useState("");
   const [deleteTf, setDeleteTf] = useState(false);
   const openDelete = async (id) => {
     setId(id);
@@ -28,16 +30,33 @@ const Backstage = () => {
     setEditTf(false);
   };
   const deleteOrder = async () => {
-    await axios.delete(`/hotels/${id}`);
-    setRefresh(!refresh);
-    closeDelete();
+    const res = await axios.delete(`/hotels/${id}`);
+
+    if (res.status === 200) {
+      closeDelete();
+      toast("刪除成功");
+    }
   };
 
   const [editTf, setEditTf] = useState(false);
   const [editDetail, setEditDetail] = useState({});
+  const newHotel = {
+    address: "",
+    city: "",
+    desc: "",
+    distance: "",
+    name: "",
+    photos: [],
+    popularHotel: false,
+    title: "",
+    type: "飯店",
+    rating: "",
+  };
+
   const openEdit = (i) => {
     setId(i._id);
     setEditDetail(i);
+    console.log(editDetail);
     setEditTf(true);
   };
 
@@ -45,6 +64,13 @@ const Backstage = () => {
   const openRoom = (i) => {
     setId(i._id);
     setRoomTf(true);
+  };
+
+  const toast = (text) => {
+    setToastText(text);
+    setToastTf(true);
+    setRefresh(!refresh);
+    setTimeout(() => setToastTf(false), 2000);
   };
 
   return (
@@ -59,7 +85,7 @@ const Backstage = () => {
           </div>
           <button
             className="border border-orange-500 p-3 bg-orange-500 rounded-lg hover:bg-transparent ease-in-out duration-200"
-            onClick={() => openEdit({})}
+            onClick={() => openEdit(newHotel)}
           >
             新增飯店
           </button>
@@ -143,6 +169,7 @@ const Backstage = () => {
         data={editDetail}
         refresh={refresh}
         setRefresh={setRefresh}
+        toast={toast}
       />
       <DeleteDialog
         open={deleteTf}
@@ -151,6 +178,13 @@ const Backstage = () => {
         deleteOrder={deleteOrder}
       />
       <RoomDialog open={roomTf} handleClose={closeDelete} id={id} />
+
+      <Toast
+        open={toastTf}
+        handleClose={closeDelete}
+        text={toastText}
+        state={"success"}
+      />
     </div>
   );
 };

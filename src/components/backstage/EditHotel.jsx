@@ -10,9 +10,16 @@ import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 import Select from "react-select";
 import axios from "axios";
 import Toast from "../Toast";
-const DeleteDialog = ({ open, handleClose, data, refresh, setRefresh }) => {
-  const [newData, setNewData] = useState(data);
-  const [toastTf, setToastTf] = useState(false);
+const DeleteDialog = ({
+  open,
+  handleClose,
+  data,
+  refresh,
+  setRefresh,
+  toast,
+}) => {
+  const [newData, setNewData] = useState({});
+
   const [addTf, setAddTf] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [destination, setDestination] = useState(""); //地區
@@ -50,6 +57,7 @@ const DeleteDialog = ({ open, handleClose, data, refresh, setRefresh }) => {
   };
   useEffect(() => {
     setNewData(data);
+    console.log(data);
   }, [data]);
   const handleInputChange = (e) => {
     const name = e?.target?.id || e;
@@ -96,14 +104,9 @@ const DeleteDialog = ({ open, handleClose, data, refresh, setRefresh }) => {
     if (data._id) {
       const res = await axios.put(`hotels/${newData._id}`, newData);
       if (res.status === 200) {
-        setToastTf(true);
-        setTimeout(() => {
-          setToastTf(false);
-          handleClose();
-          setRefresh(!refresh);
-        }, 2000);
+        handleClose();
+        toast("修改成功");
       }
-      console.log(res);
     } else {
       setNewData({
         ...newData,
@@ -120,12 +123,8 @@ const DeleteDialog = ({ open, handleClose, data, refresh, setRefresh }) => {
       try {
         const res = await axios.post("/hotels", newData);
         if (res.status === 200) {
-          setToastTf(true);
-          setTimeout(() => {
-            setToastTf(false);
-            handleClose();
-            setRefresh(!refresh);
-          }, 2000);
+          handleClose();
+          toast("新增完成");
         }
       } catch (error) {
         console.error(error);
@@ -148,7 +147,10 @@ const DeleteDialog = ({ open, handleClose, data, refresh, setRefresh }) => {
       fullWidth
       maxWidth="lg"
     >
-      <DialogTitle id="alert-dialog-title">{"編輯"}</DialogTitle>
+      <DialogTitle id="alert-dialog-title">
+        {" "}
+        {newData.title ? "編輯" : "新增"}
+      </DialogTitle>
       <DialogContent>
         <div className="p-4">
           <DialogContentText id="alert-dialog-description">
@@ -298,12 +300,6 @@ const DeleteDialog = ({ open, handleClose, data, refresh, setRefresh }) => {
           {data._id ? "送出" : "創建"}
         </Button>
       </DialogActions>
-      <Toast
-        open={toastTf}
-        handleClose={handleClose}
-        text={data._id ? "修改成功" : "新增完成"}
-        state={data._id ? "info" : "success"}
-      />
     </Dialog>
   );
 };

@@ -1,20 +1,12 @@
 import React, { useState } from "react";
-import { MdOutlineCancel } from "react-icons/md";
-import { TooltipComponent } from "@syncfusion/ej2-react-popups";
-import {
-  AiOutlineShoppingCart,
-  AiOutlineAreaChart,
-  AiOutlineBarChart,
-  AiOutlineStock,
-} from "react-icons/ai";
+import { AiOutlineShoppingCart } from "react-icons/ai";
 import { IoMdContacts } from "react-icons/io";
-import { RiContactsLine, RiStockLine } from "react-icons/ri";
-import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
+import { RiContactsLine } from "react-icons/ri";
+import { Link, useLocation } from "react-router-dom";
 
 const Sidebar = () => {
   const location = useLocation();
-  const navigate = useNavigate();
-  const [active, setActive] = useState(location.pathname.split("/")[1]);
+  const [active] = useState(location.pathname.split("/")[1]);
   const links = [
     {
       title: "訂房管理後台",
@@ -29,48 +21,9 @@ const Sidebar = () => {
           labelname: "飯店列表",
           icon: <AiOutlineShoppingCart />,
         },
-        {
-          name: "roomslist",
-          labelname: "房型列表",
-          icon: <IoMdContacts />,
-        },
-        {
-          name: "userslist",
-          labelname: "顧客列表",
-          icon: <RiContactsLine />,
-        },
-      ],
-    },
-    {
-      title: "管理員專區",
-      links: [
-        {
-          name: "hotel",
-          labelname: "飯店管理",
-          icon: <AiOutlineShoppingCart />,
-        },
-        {
-          name: "room",
-          labelname: "房型管理",
-          icon: <IoMdContacts />,
-        },
-        {
-          name: "user",
-          labelname: "顧客管理",
-          icon: <RiContactsLine />,
-        },
-        {
-          name: "auth",
-          labelname: "管理員管理",
-          icon: <RiContactsLine />,
-        },
       ],
     },
   ];
-  console.log(active);
-  const toList = (item) => {
-    console.log(123);
-  };
 
   return (
     <div className="w-72 fixed sidebar bg-white ">

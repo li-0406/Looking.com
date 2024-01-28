@@ -114,30 +114,30 @@ const Header = () => {
   const calendarRange = useRef(null);
   const peopleRef = useRef(null);
   const peopleRange = useRef(null);
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (
-        calendarRef.current &&
-        !calendarRef.current.contains(event.target) &&
-        calendarRange.current &&
-        !calendarRange.current.contains(event.target)
-      ) {
-        setOpenCalendar(false);
-      }
-      if (
-        peopleRef.current &&
-        !peopleRef.current.contains(event.target) &&
-        peopleRange.current &&
-        !peopleRange.current.contains(event.target)
-      ) {
-        setopenPeople(false);
-      }
-    };
-    document.addEventListener("click", handleClickOutside);
-    return () => {
-      document.removeEventListener("click", handleClickOutside);
-    };
-  }, [calendarRef, peopleRef, calendarRange, peopleRange]);
+  // useEffect(() => {
+  //   const handleClickOutside = (event) => {
+  //     if (
+  //       calendarRef.current &&
+  //       !calendarRef.current.contains(event.target) &&
+  //       calendarRange.current &&
+  //       !calendarRange.current.contains(event.target)
+  //     ) {
+  //       setOpenCalendar(false);
+  //     }
+  //     if (
+  //       peopleRef.current &&
+  //       !peopleRef.current.contains(event.target) &&
+  //       peopleRange.current &&
+  //       !peopleRange.current.contains(event.target)
+  //     ) {
+  //       setopenPeople(false);
+  //     }
+  //   };
+  //   document.addEventListener("click", handleClickOutside);
+  //   return () => {
+  //     document.removeEventListener("click", handleClickOutside);
+  //   };
+  // }, [calendarRef, peopleRef, calendarRange, peopleRange]);
 
   return (
     <div className="bg-slate-700 pb-20 relative">

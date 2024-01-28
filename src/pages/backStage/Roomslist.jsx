@@ -6,6 +6,8 @@ import { useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashCan, faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import EditRoom from "../../components/backstage/EditRoom";
+import DeleteDialog from "../../components/backstage/DeleteDialog";
+import Toast from "../../components/Toast";
 const Backstage = () => {
   const [rooms, setRooms] = useState([]);
   const [hotel, setHotel] = useState({});
@@ -28,13 +30,51 @@ const Backstage = () => {
 
   const [editTf, setEditTf] = useState(false);
   const [editDetail, setEditDetail] = useState({});
+  const newRoom = {
+    title: "",
+    desc: "",
+    price: "",
+    maxPeople: 4,
+    roomNumbers: [],
+  };
   const openEdit = (i) => {
+    console.log(i);
     setEditDetail(i);
     setEditTf(true);
   };
 
   const handleClose = () => {
     setEditTf(false);
+    setDeleteTf(false);
+  };
+
+  const [deleteTf, setDeleteTf] = useState(false);
+  const [deleteId, setDeleteId] = useState("");
+  const [toastTf, setToastTf] = useState(false);
+  const [toastText, setToastText] = useState("");
+
+  const openDelete = (item) => {
+    setDeleteTf(true);
+    setDeleteId(item._id);
+  };
+
+  const deleteOrder = async () => {
+    const res = await axios.delete(`/rooms/${id}/${deleteId}`);
+    console.log(res);
+    if (res.status === 200) {
+      setToastTf(true);
+      setToastText("刪除成功");
+      handleClose();
+      setRefresh(!refresh);
+      setTimeout(() => setToastTf(false), 2000);
+    }
+  };
+
+  const toast = (text) => {
+    setToastText(text);
+    setToastTf(true);
+    setRefresh(!refresh);
+    setTimeout(() => setToastTf(false), 2000);
   };
 
   return (
@@ -46,7 +86,10 @@ const Backstage = () => {
           <h1 className="text-3xl mt-3 mb-10">
             {hotel.name} <span className="text-2xl">房型分頁</span>
           </h1>
-          <button className="border border-orange-500 p-3 bg-orange-500 rounded-lg hover:bg-transparent ease-in-out duration-200">
+          <button
+            className="border border-orange-500 p-3 bg-orange-500 rounded-lg hover:bg-transparent ease-in-out duration-200"
+            onClick={() => openEdit(newRoom)}
+          >
             新增房型
           </button>
         </div>
@@ -63,14 +106,14 @@ const Backstage = () => {
           </thead>
           <tbody className="text-center">
             {rooms.map((i) => (
-              <tr>
+              <tr key={i._id}>
                 <td>{i.title}</td>
                 <td>{i.desc}</td>
-                <td>{i.price.toLocaleString()}</td>
+                <td>{i.price?.toLocaleString()}</td>
                 <td>{i.maxPeople}</td>
                 <td>
                   {i.roomNumbers.map((num) => (
-                    <p>{num.number}</p>
+                    <p key={num.number}>{num.number}</p>
                   ))}
                 </td>
                 <td>{i._id}</td>
@@ -86,6 +129,7 @@ const Backstage = () => {
                     <FontAwesomeIcon
                       icon={faTrashCan}
                       className="text-2xl hover:text-red-500 ease-in-out duration-200"
+                      onClick={() => openDelete(i)}
                     />
                   </span>
                 </td>
@@ -100,6 +144,20 @@ const Backstage = () => {
         data={editDetail}
         refresh={refresh}
         setRefresh={setRefresh}
+        id={id}
+        toast={toast}
+      />
+      <DeleteDialog
+        open={deleteTf}
+        handleClose={handleClose}
+        id={id}
+        deleteOrder={deleteOrder}
+      />
+      <Toast
+        open={toastTf}
+        handleClose={handleClose}
+        text={toastText}
+        state={"success"}
       />
     </div>
   );
